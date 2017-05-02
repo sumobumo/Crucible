@@ -106,6 +106,7 @@ public class ResourceManager {
 	}
 	
 	public TileMap reloadMap() {
+		System.out.println(currentMap);
         try {
             return loadMap(
                 "maps/map" + currentMap + ".txt");
@@ -204,19 +205,34 @@ public class ResourceManager {
     public void loadTileImages() {
         // keep looking for tile A,B,C, etc. this makes it
         // easy to drop new tiles in the images/ directory
-        tiles = new ArrayList<Image>();
-        char ch = 'A';
-        while (true) {
-            String name = "floor.png";
-        	//File file = new File("images/" + name);
-            //only one kind of tile for floor. So putting it directly
-        	File file = new File("res/background/"+name);
-            if (!file.exists()) {
-                break;
-            }
-            tiles.add(loadImage(name));
-            ch++;
-        }
+    	
+    	tiles = new ArrayList<Image>();
+    	String name = "floor.png";
+    	//File file = new File("images/" + name);
+    	//only one kind of tile for floor. So putting it directly
+    	File file = new File("res/background/"+name);
+    	if (!file.exists()) {
+    		System.out.println("Background / floor.png not found!");
+    		System.exit(1);
+    	}
+    	tiles.add(loadImage(name));
+       
+    	
+        
+//        char ch = 'A';
+//        while (true) {
+//            String name = "floor.png";
+//        	//File file = new File("images/" + name);
+//            //only one kind of tile for floor. So putting it directly
+//        	File file = new File("res/background/"+name);
+//            if (!file.exists()) {
+//                break;
+//            }
+//            tiles.add(loadImage(name));
+//            ch++;
+//        }
+    	
+    	
     }
 
 

@@ -14,6 +14,10 @@ public abstract class GameCore {
     protected static final int FONT_SIZE = 24;
 
     private static final DisplayMode POSSIBLE_MODES[] = {
+    		new DisplayMode(800, 600, 32, 0),
+    		new DisplayMode(800, 600, 24, 0),
+    		new DisplayMode(800, 600, 16, 0),
+    		
     		new DisplayMode(1920, 1080, 32, 0),
     		new DisplayMode(1920, 1080, 24, 0),
     		new DisplayMode(1920, 1080, 16, 0),
@@ -101,9 +105,9 @@ public abstract class GameCore {
     }
 
 
-//    public Image loadImage(String fileName) {
-//        return new ImageIcon(fileName).getImage();
-//    }
+    public Image loadImage(String fileName) {
+        return new ImageIcon(fileName).getImage();
+    }
 
 
     /**

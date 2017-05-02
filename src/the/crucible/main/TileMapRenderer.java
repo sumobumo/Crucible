@@ -108,6 +108,8 @@ public class TileMapRenderer {
             int y = screenHeight - background.getHeight(null);
 
             g.drawImage(background, x, y, null);
+            //** g.drawImage(map.getBackground(), x, y, null);
+            
         }
 
         // draw the visible tiles

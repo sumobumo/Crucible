@@ -115,7 +115,24 @@ public class GameManager extends GameCore{
 	
 	
 	private void checkInput(long elapsedTime) {
+//		if (exit.isPressed()) {
+//			stop();
+//		}
+	
+	
 		
+		Player player = (Player)map.getPlayer();
+		if (player.isAlive()) {
+			float velocityX = 0;
+			if (moveLeft.isPressed()) {
+				velocityX-=player.getMaxSpeed();
+			}
+			if (moveRight.isPressed()) {
+				velocityX+=player.getMaxSpeed();
+			}
+			
+			player.setVelocityX(velocityX);
+		}
 		
 	}
 	

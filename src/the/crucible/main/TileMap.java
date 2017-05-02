@@ -18,6 +18,8 @@ public class TileMap {
     private LinkedList<Sprite> sprites;
     private Sprite player;
 
+    //** private Image background;
+    
     /**
         Creates a new TileMap with the specified width and
         height (in number of tiles) of the map.
@@ -108,5 +110,15 @@ public class TileMap {
     public Iterator<Sprite> getSprites() {
         return sprites.iterator();
     }
+
+
+//	public Image getBackground() {
+//		return background;
+//	}
+//
+//
+//	public void setBackground(Image background) {
+//		this.background = background;
+//	}
 
 }
