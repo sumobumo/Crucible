@@ -37,11 +37,9 @@ public class ScreenManager {
         Returns the first compatible mode in a list of modes.
         Returns null if no modes are compatible.
     */
-    //checked
     public DisplayMode findFirstCompatibleMode(
         DisplayMode modes[])
     {
-    	
         DisplayMode goodModes[] = device.getDisplayModes();
         for (int i = 0; i < modes.length; i++) {
             for (int j = 0; j < goodModes.length; j++) {
@@ -73,7 +71,6 @@ public class ScreenManager {
         modes has a refresh rate of
         DisplayMode.REFRESH_RATE_UNKNOWN.
     */
-    //checked
     public boolean displayModesMatch(DisplayMode mode1,
         DisplayMode mode2)
 
@@ -112,7 +109,6 @@ public class ScreenManager {
         <p>
         The display uses a BufferStrategy with 2 buffers.
     */
-    //checked
     public void setFullScreen(DisplayMode displayMode) {
         final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -193,7 +189,6 @@ public class ScreenManager {
         Returns the window currently used in full screen mode.
         Returns null if the device is not in full screen mode.
     */
-    //checked
     public JFrame getFullScreenWindow() {
         return (JFrame)device.getFullScreenWindow();
     }

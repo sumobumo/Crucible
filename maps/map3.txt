@@ -1,0 +1,27 @@
+# Map file for tile-based game
+# (Lines that start with '#' are comments)
+# The tiles are:
+#   (Space) Empty tile
+#   A		Door bottom left
+#	B		Door bottom right
+#	C		Door left
+#	D		Door right
+#	E		Door top left
+#	F		Door top right
+#	G		Wall
+#	H		Unlit window
+#	I 	   	Lit window
+#	J		Floor
+#	K 		Roof
+#   *       Goal
+                                        
+                                                                 
+
+KKKKKKKK     KKKKKKK             KKKKKKK
+GGGGGGGG     GGGGGGG             GGGGGGG
+GGGGGGGG     GGGGGGG             GGGGGGG
+GGGHGGHG     GGGGGGG             GGGGGGG
+GGGGGGGGGGGGGGGGEFGG             GGGGGGG
+GGGGGGGGGGGGGGGGCDGG             GGGGGGG
+GGGGGGGGGGGGGGGGABGG             GGGGGGG
+JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ

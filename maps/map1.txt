@@ -8,7 +8,41 @@
 #   *       Goal
 #   1       Bad Guy 1 (grub)
 #   2       Bad Guy 2 (fly)
+#                                                                 
+#                                                           o     o
+#                                                     o      o    o
+#                       o o o        o o o       o     o      o 
+#                      IIIIIII      IIIIIII       o     o         2
+#                                                  o        2
+#                                  2                 2EF
+#                 EF                                 EGD
+#        EF  1    CD       1           1            EGAD     *
+#BBBBBBBBGHBBBBBBBGHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBGAAHBBBBBBBBBBB
+#
+# Map file for tile-based game
+# (Lines that start with '#' are comments)
+# The tiles are:
+#   (Space) Empty tile
+#   A		Door bottom left
+#	B		Door bottom right
+#	C		Door left
+#	D		Door right
+#	E		Door top left
+#	F		Door top right
+#	G		Wall
+#	H		Unlit window
+#	I 	   	Lit window
+#	J		Floor
+#	K 		Roof
+#   *       Goal
+                                        
                                                                  
 
-
-BBBBBBBBGHBBBBBBBGHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBGAAHBBBBBBBBBBB
+KKKKKKKK     KKKKKKK             KKKKKKK
+GGGGGGGG     GGGGGGG             GGGGGGG
+GGGGGGGG     GGGGGGG             GGGGGGG
+GGGHGGHG     GGGGGGG             GGGGGGG
+GGGGGGGGGGGGGGGGEFGG             GGGGGGG
+GGGGGGGGGGGGGGGGCDGG             GGGGGGG
+GGGGGGGGGGGGGGGGABGG             GGGGGGG
+JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
