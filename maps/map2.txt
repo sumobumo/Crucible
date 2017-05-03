@@ -15,10 +15,10 @@
 #	X		Floor
 #	- 		Roof
 #   @       Goal
-                                        
-                                                                 
-**ABCDEFoO-
-                                          @	
+                  
+                  
+                  
+                           @	
        
-           P                    1                      2
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+           P                               2           
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBBBBBBBBBBBBBBBBBBBBBBBBBBBGAAAAAAAAAAAAAAAAHBBBBBBBBBBBGA

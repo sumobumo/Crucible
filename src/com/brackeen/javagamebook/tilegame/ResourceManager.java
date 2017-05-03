@@ -17,7 +17,7 @@ import com.brackeen.javagamebook.tilegame.sprites.*;
 */
 public class ResourceManager {
 
-    private ArrayList<Image> tiles;
+    private Image tile;
     private int currentMap;
     private GraphicsConfiguration gc;
 
@@ -28,6 +28,19 @@ public class ResourceManager {
     private Sprite goalSprite;
     private Sprite grubSprite;
     private Sprite flySprite;
+    
+    private Image wall;
+    private Image roof;
+    private Image litWindow;
+    private Image unlitWindow;
+    private Image door_bl;
+    private Image door_br;
+    private Image door_l;
+    private Image door_r;
+    private Image door_tl;
+    private Image door_tr;
+
+    
 
     /**
         Creates a new ResourceManager with the specified
@@ -37,7 +50,7 @@ public class ResourceManager {
         this.gc = gc;
         loadTileImages();
         loadCreatureSprites();
-        loadPowerUpSprites();
+        loadGameBackgroundSprites();
     }
 
 
@@ -151,20 +164,63 @@ public class ResourceManager {
             for (int x=0; x<line.length(); x++) {
                 char ch = line.charAt(x);
 
-                // check if the char represents tile A, B, C etc.
-                int tile = ch - 'A';
-                if (tile >= 0 && tile < tiles.size()) {
-                    newMap.setTile(x, y, (Image)tiles.get(tile));
+                                
+                if (ch == 'X') {
+                    newMap.setTile(x, y, tile);
                 }
 
                 // check if the char represents a sprite
-                else if (ch == 'o') {
-                    addSprite(newMap, coinSprite, x, y);
-                }
-                else if (ch == '!') {
-                    addSprite(newMap, musicSprite, x, y);
-                }
                 else if (ch == '*') {
+                    //addSprite(newMap, wallSprite, x, y);
+                	wall = loadImage("res/background/wall.png");
+                	//newMap.setTile(x, y, wall);
+                }
+                else if (ch == '-') {
+                    //addSprite(newMap, roofSprite, x, y);
+                	roof = loadImage("res/background/roof.png");
+                	//newMap.setTile(x, y, roof);
+                }
+                else if (ch == 'o') {
+                    //addSprite(newMap, unlitWindowSprite, x, y);
+                	unlitWindow = loadImage("res/background/window.png");
+                	//newMap.setTile(x, y, unlitWindow);
+                }
+                else if (ch == 'O') {
+                    //addSprite(newMap, litWindowSprite, x, y);
+                	litWindow = loadImage("res/background/window_lit.png");
+                	//newMap.setTile(x, y, litWindow);
+                }
+                else if (ch == 'A') {
+                    //addSprite(newMap, door_blSprite, x, y);
+                	door_bl = loadImage("res/background/door_bl.png");
+                	//newMap.setTile(x, y, door_bl);
+                }
+                else if (ch == 'B') {
+                    //addSprite(newMap, door_brSprite, x, y);
+                	door_br = loadImage("res/background/door_br.png");
+                	//newMap.setTile(x, y, door_br);
+                } 
+                else if (ch == 'C') {
+                    //addSprite(newMap, door_lSprite, x, y);
+                	door_l = loadImage("res/background/door_l.png");
+                	//newMap.setTile(x, y, door_l);
+                }
+                else if (ch == 'D') {
+                    //addSprite(newMap, door_rSprite, x, y);
+                	door_r = loadImage("res/background/door_r.png");
+                	//newMap.setTile(x, y, door_r);
+                } 
+                else if (ch == 'E') {
+                    //addSprite(newMap, door_tlSprite, x, y);
+                	door_tl = loadImage("res/background/door_tl.png");
+                	//newMap.setTile(x, y, door_tl);
+                }
+                else if (ch == 'F') {
+                    //addSprite(newMap, door_trSprite, x, y);
+                	door_tr = loadImage("res/background/door_tr.png");
+                	//newMap.setTile(x, y, door_tr);
+                }
+                else if (ch == '@') {
                     addSprite(newMap, goalSprite, x, y);
                 }
                 else if (ch == '1') {
@@ -186,6 +242,7 @@ public class ResourceManager {
     }
 
 
+    //required for goal sprite only
     private void addSprite(TileMap map,
         Sprite hostSprite, int tileX, int tileY)
     {
@@ -218,17 +275,23 @@ public class ResourceManager {
     public void loadTileImages() {
         // keep looking for tile A,B,C, etc. this makes it
         // easy to drop new tiles in the images/ directory
-        tiles = new ArrayList<Image>();
-        char ch = 'A';
-        while (true) {
-            String name = "background/tile_" + ch + ".png";
-            File file = new File("res/" + name);
-            if (!file.exists()) {
-                break;
-            }
-            tiles.add(loadImage(name));
-            ch++;
-        }
+        
+        
+        String name = "background/floor.png";
+        File file = new File("res/" + name);
+        tile = loadImage(name);
+        
+//        
+//        char ch = 'A';
+//        while (true) {
+//            String name = "background/tile_" + ch + ".png";
+//            File file = new File("res/" + name);
+//            if (!file.exists()) {
+//                break;
+//            }
+//            tiles.add(loadImage(name));
+//            ch++;
+//        }
     }
 
 
@@ -318,30 +381,31 @@ public class ResourceManager {
 
     
 
-    private void loadPowerUpSprites() {
+    //required for goal sprite only
+    private void loadGameBackgroundSprites() {
         // create "goal" sprite
         Animation anim = new Animation();
         anim.addFrame(loadImage("../images/heart1.png"), 150);
         anim.addFrame(loadImage("../images/heart2.png"), 150);
         anim.addFrame(loadImage("../images/heart3.png"), 150);
         anim.addFrame(loadImage("../images/heart2.png"), 150);
-        goalSprite = new PowerUp.Goal(anim);
+        goalSprite = new BackgroundSprites.Goal(anim);
 
-        // create "star" sprite
-        anim = new Animation();
-        anim.addFrame(loadImage("../images/star1.png"), 100);
-        anim.addFrame(loadImage("../images/star2.png"), 100);
-        anim.addFrame(loadImage("../images/star3.png"), 100);
-        anim.addFrame(loadImage("../images/star4.png"), 100);
-        coinSprite = new PowerUp.Star(anim);
-
-        // create "music" sprite
-        anim = new Animation();
-        anim.addFrame(loadImage("../images/music1.png"), 150);
-        anim.addFrame(loadImage("../images/music2.png"), 150);
-        anim.addFrame(loadImage("../images/music3.png"), 150);
-        anim.addFrame(loadImage("../images/music2.png"), 150);
-        musicSprite = new PowerUp.Music(anim);
+//        // create "star" sprite
+//        anim = new Animation();
+//        anim.addFrame(loadImage("../images/star1.png"), 100);
+//        anim.addFrame(loadImage("../images/star2.png"), 100);
+//        anim.addFrame(loadImage("../images/star3.png"), 100);
+//        anim.addFrame(loadImage("../images/star4.png"), 100);
+//        coinSprite = new BackgroundSprites.Wall(anim);
+//
+//        // create "music" sprite
+//        anim = new Animation();
+//        anim.addFrame(loadImage("../images/music1.png"), 150);
+//        anim.addFrame(loadImage("../images/music2.png"), 150);
+//        anim.addFrame(loadImage("../images/music3.png"), 150);
+//        anim.addFrame(loadImage("../images/music2.png"), 150);
+//        musicSprite = new BackgroundSprites.Roof(anim);
     }
 
 }

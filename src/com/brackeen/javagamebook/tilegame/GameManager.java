@@ -11,7 +11,9 @@ import javax.sound.midi.Sequencer;
 import javax.sound.sampled.AudioFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -76,6 +78,15 @@ public class GameManager extends GameCore {
 
         // load first map
         map = resourceManager.loadNextMap();
+        
+        
+        //Intro movie
+        
+        
+        //instruction screen before game starts
+        JFrame frame = screen.getFullScreenWindow();
+        JOptionPane.showMessageDialog(frame, "The Crucuble \n Instructions: \n 1. Kill all the enemy to proceed to next level. \n 2. Use left and right arrow to move and space to attack.\n 3.Press Esc to pause. ");
+        
 
         // load sounds
         soundManager = new SoundManager(PLAYBACK_FORMAT);
@@ -132,7 +143,7 @@ public class GameManager extends GameCore {
 
 
     /**
-        Closes any resurces used by the GameManager.
+        Closes any resources used by the GameManager.
     */
     public void stop() {
         super.stop();
@@ -441,8 +452,8 @@ public class GameManager extends GameCore {
 
         // check for player collision with other sprites
         Sprite collisionSprite = getSpriteCollision(player);
-        if (collisionSprite instanceof PowerUp) {
-            acquirePowerUp((PowerUp)collisionSprite);
+        if (collisionSprite instanceof BackgroundSprites) {
+            acquirePowerUp((BackgroundSprites)collisionSprite);
         }
         else if (collisionSprite instanceof Creature) {
             Creature badguy = (Creature)collisionSprite;
@@ -465,20 +476,11 @@ public class GameManager extends GameCore {
         Gives the player the speicifed power up and removes it
         from the map.
     */
-    public void acquirePowerUp(PowerUp powerUp) {
+    public void acquirePowerUp(BackgroundSprites powerUp) {
         // remove it from the map
         map.removeSprite(powerUp);
 
-        if (powerUp instanceof PowerUp.Star) {
-            // do something here, like give the player points
-            soundManager.play(prizeSound);
-        }
-        else if (powerUp instanceof PowerUp.Music) {
-            // change the music
-            soundManager.play(prizeSound);
-            toggleDrumPlayback();
-        }
-        else if (powerUp instanceof PowerUp.Goal) {
+        if (powerUp instanceof BackgroundSprites.Goal) {
             // advance to next map
             soundManager.play(prizeSound,
                 new EchoFilter(2000, .7f), false);
