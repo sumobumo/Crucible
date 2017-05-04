@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 import java.io.*;
 import javax.sound.midi.*;

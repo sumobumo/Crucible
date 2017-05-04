@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.tilegame;
+package tilegame;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,11 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import com.brackeen.javagamebook.graphics.*;
-import com.brackeen.javagamebook.sound.*;
-import com.brackeen.javagamebook.input.*;
-import com.brackeen.javagamebook.test.GameCore;
-import com.brackeen.javagamebook.tilegame.sprites.*;
+import graphics.*;
+import input.*;
+import sound.*;
+import sprites.*;
+import test.GameCore;
 
 /**
     GameManager manages all parts of the game.

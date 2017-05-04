@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 /**
     The EchoFilter class is a SoundFilter that emulates an echo.

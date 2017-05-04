@@ -1,10 +1,12 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 import java.io.*;
 import javax.sound.sampled.*;
+
+import util.LoopingByteInputStream;
+import util.ThreadPool;
+
 import javax.sound.midi.*;
-import com.brackeen.javagamebook.util.ThreadPool;
-import com.brackeen.javagamebook.util.LoopingByteInputStream;
 
 
 /**

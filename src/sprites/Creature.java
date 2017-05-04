@@ -1,7 +1,8 @@
-package com.brackeen.javagamebook.tilegame.sprites;
+package sprites;
 
 import java.lang.reflect.Constructor;
-import com.brackeen.javagamebook.graphics.*;
+
+import graphics.*;
 
 /**
     A Creature is a Sprite that is affected by gravity and can

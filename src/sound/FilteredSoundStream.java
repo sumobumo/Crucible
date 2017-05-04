@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;

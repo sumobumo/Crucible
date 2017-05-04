@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 /**
     The FilterSequence class is a SoundFilter that combines

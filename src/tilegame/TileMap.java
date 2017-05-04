@@ -1,10 +1,11 @@
-package com.brackeen.javagamebook.tilegame;
+package tilegame;
 
 import java.awt.Image;
 import java.util.LinkedList;
-import java.util.Iterator;
 
-import com.brackeen.javagamebook.graphics.Sprite;
+import graphics.Sprite;
+
+import java.util.Iterator;
 
 /**
     The TileMap class contains the data for a tile-based

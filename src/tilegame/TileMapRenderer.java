@@ -1,10 +1,10 @@
-package com.brackeen.javagamebook.tilegame;
+package tilegame;
 
 import java.awt.*;
 import java.util.Iterator;
 
-import com.brackeen.javagamebook.graphics.Sprite;
-import com.brackeen.javagamebook.tilegame.sprites.Creature;
+import graphics.Sprite;
+import sprites.Creature;
 
 /**
     The TileMapRenderer class draws a TileMap on the screen.

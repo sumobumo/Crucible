@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.graphics;
+package graphics;
 
 import javax.swing.RepaintManager;
 import javax.swing.JComponent;

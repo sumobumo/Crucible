@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 /**
     The Sound class is a container for sound samples. The sound
