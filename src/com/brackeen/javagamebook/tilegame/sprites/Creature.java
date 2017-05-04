@@ -25,6 +25,10 @@ public abstract class Creature extends Sprite {
     private Animation deadRight;
     private int state;
     private long stateTime;
+    
+    //private int health;
+    //private int attackDamage;
+    //private boolean state; //walk or attack
 
     /**
         Creates a new Creature with the specified Animations.

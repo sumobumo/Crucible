@@ -3,22 +3,24 @@
 # (Lines that start with '#' are comments)
 # The tiles are:
 #   (Space) Empty tile
-#   A		Door bottom left
-#	B		Door bottom right
-#	C		Door left
-#	D		Door right
-#	E		Door top left
-#	F		Door top right
-#	*		Wall
-#	o		Unlit window
-#	O 	   	Lit window
 #	X		Floor
-#	- 		Roof
 #   @       Goal
-                                        
-                                                                 
-**ABCDEFoO-
+#map width in tiles = 100
+ 
+ 
+ 
+                                         
+                          
+                         
+                         
+                       
+                      
+                     
+                      
+                    
+                                                                  
+                  
                                           @	
-       
-           P                    1                      2
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                       
+           P                    1                      2                                          @
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

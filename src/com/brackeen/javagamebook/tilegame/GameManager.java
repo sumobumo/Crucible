@@ -74,7 +74,9 @@ public class GameManager extends GameCore {
         // load resources
         renderer = new TileMapRenderer();
         renderer.setBackground(
-            resourceManager.loadImage("background/background1.png"));
+            resourceManager.loadImage("background/background3.png"),
+            resourceManager.loadImage("background/background_mid3.png"),
+            resourceManager.loadImage("background/background_front3.png"));
 
         // load first map
         map = resourceManager.loadNextMap();

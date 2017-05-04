@@ -28,6 +28,9 @@ public class TileMapRenderer {
     private static final int TILE_SIZE_BITS = 6;
 
     private Image background;
+    
+    private Image background_mid;
+    private Image background_front;
 
     /**
         Converts a pixel position to a tile position.
@@ -67,8 +70,10 @@ public class TileMapRenderer {
     /**
         Sets the background to draw.
     */
-    public void setBackground(Image background) {
+    public void setBackground(Image background, Image background_mid, Image background_front) {
         this.background = background;
+        this.background_mid = background_mid;
+        this.background_front = background_front;
     }
 
 
@@ -108,6 +113,26 @@ public class TileMapRenderer {
             int y = screenHeight - background.getHeight(null);
 
             g.drawImage(background, x, y, null);
+        }
+        
+        if(background_mid!=null){
+        	//System.out.println("MAP width = "+map.getWidth()+"in pixels = "+tilesToPixels(map.getWidth())+"Background width ="+background.getWidth(null));
+        	int x = offsetX *
+                    (screenWidth - background_mid.getWidth(null)) /
+                    (screenWidth - mapWidth);
+                int y = screenHeight - background_mid.getHeight(null);
+
+                g.drawImage(background_mid, x, y, null);
+        }
+        
+        if(background_front!=null){
+        	
+        	int x = offsetX *
+                    (screenWidth - background_front.getWidth(null)) /
+                    (screenWidth - mapWidth);
+                int y = screenHeight - background_front.getHeight(null);
+
+                g.drawImage(background_front, x, y, null);
         }
 
         // draw the visible tiles
