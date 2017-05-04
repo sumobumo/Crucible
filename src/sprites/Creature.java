@@ -115,6 +115,10 @@ public abstract class Creature extends Sprite {
     public boolean isAlive() {
         return (state == STATE_NORMAL);
     }
+    
+    public boolean isStunned(){
+    	return false;
+    }
 
 
     /**
@@ -176,6 +180,13 @@ public abstract class Creature extends Sprite {
         if (state == STATE_DYING && stateTime >= DIE_TIME) {
             setState(STATE_DEAD);
         }
+        slow();
     }
+
+
+	public void slow() {
+		return;
+		
+	}
 
 }
