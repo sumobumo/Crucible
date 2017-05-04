@@ -189,18 +189,14 @@ public class GameManager extends GameCore {
     	}
     	
         Player player = (Player)map.getPlayer();
-        if (player.isAlive()) {
-            float velocityX = 0;
-            if (moveLeft.isPressed()) {
-                velocityX-=player.getMaxSpeed();
-            }
-            if (moveRight.isPressed()) {
-                velocityX+=player.getMaxSpeed();
-            }
-            if (jump.isPressed()) {
-                player.jump(false);
-            }
-            player.setVelocityX(velocityX);
+        if (moveLeft.isPressed()) {
+        	player.moveLeft();
+        }
+        if (moveRight.isPressed()) {
+            player.moveRight();
+        }
+        if (jump.isPressed()) {
+            player.jump(false);
         }
 
     }

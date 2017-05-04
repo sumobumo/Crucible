@@ -11,6 +11,7 @@ public class Sprite {
     // velocity (pixels per millisecond)
     private float dx;
     private float dy;
+    protected float maxSpeed = .5f;
 
     /**
         Creates a new Sprite object with the specified Animation.
@@ -27,6 +28,10 @@ public class Sprite {
         x += dx * elapsedTime;
         y += dy * elapsedTime;
         anim.update(elapsedTime);
+    }
+    
+    public float getMaxSpeed() {
+        return maxSpeed;
     }
 
     /**
