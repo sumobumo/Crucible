@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.input;
+package input;
 
 /**
     The GameAction class is an abstract to a user-initiated

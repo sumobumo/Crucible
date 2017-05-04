@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.tilegame;
+package tilegame;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -6,8 +6,8 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
-import com.brackeen.javagamebook.graphics.*;
-import com.brackeen.javagamebook.tilegame.sprites.*;
+import graphics.*;
+import sprites.*;
 
 
 /**

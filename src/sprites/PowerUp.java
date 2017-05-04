@@ -1,7 +1,8 @@
-package com.brackeen.javagamebook.tilegame.sprites;
+package sprites;
 
 import java.lang.reflect.Constructor;
-import com.brackeen.javagamebook.graphics.*;
+
+import graphics.*;
 
 /**
     A PowerUp class is a Sprite that the player can pick up.

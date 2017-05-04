@@ -1,6 +1,6 @@
-package com.brackeen.javagamebook.tilegame.sprites;
+package sprites;
 
-import com.brackeen.javagamebook.graphics.Animation;
+import graphics.Animation;
 
 /**
     A Fly is a Creature that fly slowly in the air.

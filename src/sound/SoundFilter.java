@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
 /**
     A abstract class designed to filter sound samples.

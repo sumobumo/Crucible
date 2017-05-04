@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.input;
+package input;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.graphics;
+package graphics;
 
 import java.awt.Image;
 

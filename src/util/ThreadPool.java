@@ -1,4 +1,4 @@
-package com.brackeen.javagamebook.util;
+package util;
 import java.util.LinkedList;
 
 /**

@@ -1,6 +1,6 @@
-package com.brackeen.javagamebook.tilegame.sprites;
+package sprites;
 
-import com.brackeen.javagamebook.graphics.Animation;
+import graphics.Animation;
 
 /**
     A Grub is a Creature that moves slowly on the ground.

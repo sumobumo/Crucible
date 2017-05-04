@@ -1,9 +1,9 @@
-package com.brackeen.javagamebook.test;
+package test;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
 
-import com.brackeen.javagamebook.graphics.ScreenManager;
+import graphics.ScreenManager;
 
 /**
     Simple abstract class used for testing. Subclasses should

@@ -1,6 +1,6 @@
-package com.brackeen.javagamebook.sound;
+package sound;
 
-import com.brackeen.javagamebook.graphics.Sprite;
+import graphics.Sprite;
 
 /**
     The Filter3d class is a SoundFilter that creates a 3d sound
