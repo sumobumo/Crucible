@@ -52,7 +52,7 @@ public class GameManager extends GameCore {
 
 	private GameAction moveLeft;
 	private GameAction moveRight;
-	private GameAction jump;
+	private GameAction roll;
 	private GameAction exit;
 
 	// for pausing game
@@ -149,7 +149,7 @@ public class GameManager extends GameCore {
 	private void initInput() {
 		moveLeft = new GameAction("moveLeft");
 		moveRight = new GameAction("moveRight");
-		jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+		roll = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
 		// exit = new GameAction("exit", GameAction.DETECT_INITAL_PRESS_ONLY);
 
 		pause = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
@@ -159,7 +159,7 @@ public class GameManager extends GameCore {
 
 		inputManager.mapToKey(moveLeft, KeyEvent.VK_LEFT);
 		inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
-		inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
+		inputManager.mapToKey(roll, KeyEvent.VK_SPACE);
 		// inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
 		inputManager.mapToKey(pause, KeyEvent.VK_ESCAPE);
 	}
@@ -178,14 +178,20 @@ public class GameManager extends GameCore {
 		}
 
 		Player player = (Player) map.getPlayer();
-		if (moveLeft.isPressed()) {
+		if (moveLeft.isPressed() && !moveRight.isPressed()) {
 			player.moveLeft();
 		}
-		if (moveRight.isPressed()) {
+		if (moveRight.isPressed() && !moveLeft.isPressed()) {
 			player.moveRight();
 		}
-		if (jump.isPressed()) {
-			player.jump(false);
+		if (roll.isPressed()) {
+			if(moveRight.isPressed()){
+				player.beginRoll(1);
+			}
+			if(moveLeft.isPressed()){
+				player.beginRoll(-1);
+			}
+			
 		}
 
 	}
@@ -416,9 +422,9 @@ public class GameManager extends GameCore {
 	private void updateCreature(Creature creature, long elapsedTime) {
 
 		// apply gravity
-		if (!creature.isFlying()) {
-			creature.setVelocityY(creature.getVelocityY() + GRAVITY * elapsedTime);
-		}
+		
+		creature.setVelocityY(creature.getVelocityY() + GRAVITY * elapsedTime);
+		
 
 		// change x
 		float dx = creature.getVelocityX();
@@ -471,7 +477,7 @@ public class GameManager extends GameCore {
 		if (!player.isAlive()) {
 			return;
 		}
-
+		//TODO: Attack and Invulnerability Frames
 		// check for player collision with other sprites
 		Sprite collisionSprite = getSpriteCollision(player);
 		if (collisionSprite instanceof BackgroundSprites) {
@@ -483,8 +489,8 @@ public class GameManager extends GameCore {
 				soundManager.play(boopSound);
 				badguy.setHealth(Creature.STATE_DYING);
 				player.setY(badguy.getY() - player.getHeight());
-				player.jump(true);
-			} else {
+				//player.jump(true);
+			} else if (!player.isInvulnerable()){
 				// player dies!
 				player.setHealth(Creature.STATE_DYING);
 			}
