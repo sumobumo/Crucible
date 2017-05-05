@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.PixelGrabber;
 import java.util.Iterator;
 
 import javax.sound.midi.Sequence;
@@ -24,466 +25,484 @@ import sprites.*;
 import test.GameCore;
 
 /**
-    GameManager manages all parts of the game.
-*/
+ * GameManager manages all parts of the game.
+ */
 public class GameManager extends GameCore {
 
-    public static void main(String[] args) {
-        new GameManager().run();
-    }
+	public static void main(String[] args) {
+		new GameManager().run();
+	}
 
-    // uncompressed, 44100Hz, 16-bit, mono, signed, little-endian
-    private static final AudioFormat PLAYBACK_FORMAT =
-        new AudioFormat(44100, 16, 1, true, false);
+	// uncompressed, 44100Hz, 16-bit, mono, signed, little-endian
+	private static final AudioFormat PLAYBACK_FORMAT = new AudioFormat(44100, 16, 1, true, false);
 
-    private static final int DRUM_TRACK = 1;
+	private static final int DRUM_TRACK = 1;
 
-    public static final float GRAVITY = 0.002f;
+	public static final float GRAVITY = 0.002f;
 
-    private Point pointCache = new Point();
-    private TileMap map;
-    private MidiPlayer midiPlayer;
-    private SoundManager soundManager;
-    private ResourceManager resourceManager;
-    private Sound prizeSound;
-    private Sound boopSound;
-    private InputManager inputManager;
-    private TileMapRenderer renderer;
+	private Point pointCache = new Point();
+	private TileMap map;
+	private MidiPlayer midiPlayer;
+	private SoundManager soundManager;
+	private ResourceManager resourceManager;
+	private Sound prizeSound;
+	private Sound boopSound;
+	private InputManager inputManager;
+	private TileMapRenderer renderer;
 
-    private GameAction moveLeft;
-    private GameAction moveRight;
-    private GameAction jump;
-    private GameAction exit;
+	private GameAction moveLeft;
+	private GameAction moveRight;
+	private GameAction jump;
+	private GameAction exit;
 
-    //for pausing game
+	// for pausing game
 	private GameAction pause;
 	private boolean paused;
 	private JPanel pauseMenu;
 
+	public void init() {
+		super.init();
 
-    public void init() {
-        super.init();
+		// set up input manager
+		initInput();
 
-        // set up input manager
-        initInput();
+		// start resource manager
+		resourceManager = new ResourceManager(screen.getFullScreenWindow().getGraphicsConfiguration());
 
-        // start resource manager
-        resourceManager = new ResourceManager(
-        screen.getFullScreenWindow().getGraphicsConfiguration());
+		// load resources
+		renderer = new TileMapRenderer();
+		renderer.setBackground(resourceManager.loadImage("background/background3.png"),
+				resourceManager.loadImage("background/background_mid3.png"),
+				resourceManager.loadImage("background/background_front3.png"));
 
-        // load resources
-        renderer = new TileMapRenderer();
-        renderer.setBackground(
-            resourceManager.loadImage("background/background3.png"),
-            resourceManager.loadImage("background/background_mid3.png"),
-            resourceManager.loadImage("background/background_front3.png"));
+		// load first map
+		map = resourceManager.loadNextMap();
 
-        // load first map
-        map = resourceManager.loadNextMap();
-        
-        
-        //Intro movie
-        
-        
-        //instruction screen before game starts
-        JFrame frame = screen.getFullScreenWindow();
-        JOptionPane.showMessageDialog(frame, "The Crucuble \n Instructions: \n 1. Kill all the enemy to proceed to next level. \n 2. Use left and right arrow to move and space to attack.\n 3.Press Esc to pause. ");
-        
+		// Intro movie
 
-        // load sounds
-        soundManager = new SoundManager(PLAYBACK_FORMAT);
-        prizeSound = soundManager.getSound("res/sounds/clang10.wav");
-        boopSound = soundManager.getSound("res/sounds/beep.wav");
+		// instruction screen before game starts
+		JFrame frame = screen.getFullScreenWindow();
+		JOptionPane.showMessageDialog(frame,
+				"The Crucuble \n Instructions: \n 1. Kill all the enemy to proceed to next level. \n 2. Use left and right arrow to move and space to attack.\n 3.Press Esc to pause. ");
 
-        // start music
-        midiPlayer = new MidiPlayer();
-        Sequence sequence =
-            midiPlayer.getSequence("res/sounds/music.midi");
-        midiPlayer.play(sequence, true);
-        toggleDrumPlayback();
-        
-        
-        pauseMenu = new JPanel();
-        JButton resume = new JButton("resume");
-        resume.addActionListener(new ActionListener() {
-			
+		// load sounds
+		soundManager = new SoundManager(PLAYBACK_FORMAT);
+		prizeSound = soundManager.getSound("res/sounds/clang10.wav");
+		boopSound = soundManager.getSound("res/sounds/beep.wav");
+
+		// start music
+		midiPlayer = new MidiPlayer();
+		Sequence sequence = midiPlayer.getSequence("res/sounds/music.midi");
+		midiPlayer.play(sequence, true);
+		toggleDrumPlayback();
+
+		pauseMenu = new JPanel();
+		JButton resume = new JButton("resume");
+		resume.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				//paused = !paused;
+				// paused = !paused;
 				pause.press();
-				
+
 			}
 		});
-        
-        JButton exit = new JButton("exit");
-        exit.addActionListener(new ActionListener() {
-			
+
+		JButton exit = new JButton("exit");
+		exit.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				stop();
-				
+
 			}
 		});
-        
-        //create pause menu
-        Border border= BorderFactory.createLineBorder(Color.black);
-        
-        pauseMenu.add(resume);
-        pauseMenu.add(exit);
-        
-        pauseMenu.setBorder(border);
-        pauseMenu.setVisible(false);
-        pauseMenu.setSize(pauseMenu.getPreferredSize());
-        
-        //center pause menu
-        //pauseMenu.setLocation((screen.getWidth() - pauseMenu.getWidth())/2, (screen.getHeight() - pauseMenu.getHeight())/2);
-        
-        screen.getFullScreenWindow().getLayeredPane().add(pauseMenu, JLayeredPane.MODAL_LAYER);
-    }
 
+		// create pause menu
+		Border border = BorderFactory.createLineBorder(Color.black);
 
-    /**
-        Closes any resources used by the GameManager.
-    */
-    public void stop() {
-        super.stop();
-        midiPlayer.close();
-        soundManager.close();
-    }
+		pauseMenu.add(resume);
+		pauseMenu.add(exit);
 
+		pauseMenu.setBorder(border);
+		pauseMenu.setVisible(false);
+		pauseMenu.setSize(pauseMenu.getPreferredSize());
 
-    private void initInput() {
-        moveLeft = new GameAction("moveLeft");
-        moveRight = new GameAction("moveRight");
-        jump = new GameAction("jump",
-            GameAction.DETECT_INITAL_PRESS_ONLY);
-        //exit = new GameAction("exit", GameAction.DETECT_INITAL_PRESS_ONLY);
+		// center pause menu
+		// pauseMenu.setLocation((screen.getWidth() - pauseMenu.getWidth())/2,
+		// (screen.getHeight() - pauseMenu.getHeight())/2);
 
-        pause = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
-        
-        inputManager = new InputManager(
-            screen.getFullScreenWindow());
-        inputManager.setCursor(InputManager.INVISIBLE_CURSOR);
+		screen.getFullScreenWindow().getLayeredPane().add(pauseMenu, JLayeredPane.MODAL_LAYER);
+	}
 
-        inputManager.mapToKey(moveLeft, KeyEvent.VK_LEFT);
-        inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
-        inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
-        //inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
-        inputManager.mapToKey(pause, KeyEvent.VK_ESCAPE);
-    }
+	/**
+	 * Closes any resources used by the GameManager.
+	 */
+	public void stop() {
+		super.stop();
+		midiPlayer.close();
+		soundManager.close();
+	}
 
+	private void initInput() {
+		moveLeft = new GameAction("moveLeft");
+		moveRight = new GameAction("moveRight");
+		jump = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
+		// exit = new GameAction("exit", GameAction.DETECT_INITAL_PRESS_ONLY);
 
-    private void checkInput(long elapsedTime) {
+		pause = new GameAction("jump", GameAction.DETECT_INITAL_PRESS_ONLY);
 
-//        if (exit.isPressed()) {
-//            stop();
-//        }
+		inputManager = new InputManager(screen.getFullScreenWindow());
+		inputManager.setCursor(InputManager.INVISIBLE_CURSOR);
 
-    	if(pause.isPressed()){
-    		paused = !paused;
-    		//inputManager.resetAllGameActions();
-    		pauseMenu.setVisible(paused);
-            
-    	}
-    	
-        Player player = (Player)map.getPlayer();
-        if (moveLeft.isPressed()) {
-        	player.moveLeft();
-        }
-        if (moveRight.isPressed()) {
-            player.moveRight();
-        }
-        if (jump.isPressed()) {
-            player.jump(false);
-        }
+		inputManager.mapToKey(moveLeft, KeyEvent.VK_LEFT);
+		inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
+		inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
+		// inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
+		inputManager.mapToKey(pause, KeyEvent.VK_ESCAPE);
+	}
 
-    }
+	private void checkInput(long elapsedTime) {
 
+		// if (exit.isPressed()) {
+		// stop();
+		// }
 
-    public void draw(Graphics2D g) {
-        renderer.draw(g, map,
-            screen.getWidth(), screen.getHeight());
-        if(paused){
-        	pauseMenu.paint(g);
-        }
-    }
+		if (pause.isPressed()) {
+			paused = !paused;
+			// inputManager.resetAllGameActions();
+			pauseMenu.setVisible(paused);
 
+		}
 
-    /**
-        Gets the current map.
-    */
-    public TileMap getMap() {
-        return map;
-    }
+		Player player = (Player) map.getPlayer();
+		if (moveLeft.isPressed()) {
+			player.moveLeft();
+		}
+		if (moveRight.isPressed()) {
+			player.moveRight();
+		}
+		if (jump.isPressed()) {
+			player.jump(false);
+		}
 
+	}
 
-    /**
-        Turns on/off drum playback in the midi music (track 1).
-    */
-    public void toggleDrumPlayback() {
-        Sequencer sequencer = midiPlayer.getSequencer();
-        if (sequencer != null) {
-            sequencer.setTrackMute(DRUM_TRACK,
-                !sequencer.getTrackMute(DRUM_TRACK));
-        }
-    }
+	public void draw(Graphics2D g) {
+		renderer.draw(g, map, screen.getWidth(), screen.getHeight());
+		if (paused) {
+			pauseMenu.paint(g);
+		}
+	}
 
+	/**
+	 * Gets the current map.
+	 */
+	public TileMap getMap() {
+		return map;
+	}
 
-    /**
-        Gets the tile that a Sprites collides with. Only the
-        Sprite's X or Y should be changed, not both. Returns null
-        if no collision is detected.
-    */
-    public Point getTileCollision(Sprite sprite,
-        float newX, float newY)
-    {
-        float fromX = Math.min(sprite.getX(), newX);
-        float fromY = Math.min(sprite.getY(), newY);
-        float toX = Math.max(sprite.getX(), newX);
-        float toY = Math.max(sprite.getY(), newY);
+	/**
+	 * Turns on/off drum playback in the midi music (track 1).
+	 */
+	public void toggleDrumPlayback() {
+		Sequencer sequencer = midiPlayer.getSequencer();
+		if (sequencer != null) {
+			sequencer.setTrackMute(DRUM_TRACK, !sequencer.getTrackMute(DRUM_TRACK));
+		}
+	}
 
-        // get the tile locations
-        int fromTileX = TileMapRenderer.pixelsToTiles(fromX);
-        int fromTileY = TileMapRenderer.pixelsToTiles(fromY);
-        int toTileX = TileMapRenderer.pixelsToTiles(
-            toX + sprite.getWidth() - 1);
-        int toTileY = TileMapRenderer.pixelsToTiles(
-            toY + sprite.getHeight() - 1);
+	/**
+	 * Gets the tile that a Sprites collides with. Only the Sprite's X or Y
+	 * should be changed, not both. Returns null if no collision is detected.
+	 */
+	public Point getTileCollision(Sprite sprite, float newX, float newY) {
+		float fromX = Math.min(sprite.getX(), newX);
+		float fromY = Math.min(sprite.getY(), newY);
+		float toX = Math.max(sprite.getX(), newX);
+		float toY = Math.max(sprite.getY(), newY);
 
-        // check each tile for a collision
-        for (int x=fromTileX; x<=toTileX; x++) {
-            for (int y=fromTileY; y<=toTileY; y++) {
-                if (x < 0 || x >= map.getWidth() ||
-                    map.getTile(x, y) != null)
-                {
-                    // collision found, return the tile
-                    pointCache.setLocation(x, y);
-                    return pointCache;
-                }
-            }
-        }
+		// get the tile locations
+		int fromTileX = TileMapRenderer.pixelsToTiles(fromX);
+		int fromTileY = TileMapRenderer.pixelsToTiles(fromY);
+		int toTileX = TileMapRenderer.pixelsToTiles(toX + sprite.getWidth() - 1);
+		int toTileY = TileMapRenderer.pixelsToTiles(toY + sprite.getHeight() - 1);
 
-        // no collision found
-        return null;
-    }
+		// check each tile for a collision
+		for (int x = fromTileX; x <= toTileX; x++) {
+			for (int y = fromTileY; y <= toTileY; y++) {
+				if (x < 0 || x >= map.getWidth() || map.getTile(x, y) != null) {
+					// collision found, return the tile
+					pointCache.setLocation(x, y);
+					return pointCache;
+				}
+			}
+		}
 
+		// no collision found
+		return null;
+	}
 
-    /**
-        Checks if two Sprites collide with one another. Returns
-        false if the two Sprites are the same. Returns false if
-        one of the Sprites is a Creature that is not alive.
-    */
-    public boolean isCollision(Sprite s1, Sprite s2) {
-        // if the Sprites are the same, return false
-        if (s1 == s2) {
-            return false;
-        }
+	/*
+	 * pixelPerfectCollision(); first determines the area where the sprites
+	 * collides AKA the collision-rectangle. It then grabs the pixels from both
+	 * sprites which are inside the rectangle. It then checks every pixel from
+	 * the arrays given by grabPixels();, and if 2 pixels at the same position
+	 * are opaque, (alpha value over 0) it will return true. Otherwise it will
+	 * return false.
+	 */
+	private boolean pixelPerfectCollision(Sprite s1, Sprite s2) {
+		/*
+		 * Get the X-values and Y-values for the two coordinates where the
+		 * sprites collide
+		 */
+		int left1 = (int) s1.getX();
+		int right1 = left1 + s1.getWidth();
+		int top1 = (int) s1.getY();
+		int bottom1 = top1 + s1.getHeight();
 
-        // if one of the Sprites is a dead Creature, return false
-        if (s1 instanceof Creature && !((Creature)s1).isAlive()) {
-            return false;
-        }
-        if (s2 instanceof Creature && !((Creature)s2).isAlive()) {
-            return false;
-        }
+		int left2 = (int) s2.getX();
+		int right2 = left2 + s2.getWidth();
+		int top2 = (int) s2.getY();
+		int bottom2 = top2 + s2.getHeight();
 
-        // get the pixel location of the Sprites
-        int s1x = Math.round(s1.getX());
-        int s1y = Math.round(s1.getY());
-        int s2x = Math.round(s2.getX());
-        int s2y = Math.round(s2.getY());
+		int leastleft = (left1 > left2) ? left1 : left2;
+		int leastright = (right1 < right2) ? right1 : right2;
+		int leasttop = (top1 > top2) ? top1 : top2;
+		int leastbottom = (bottom1 < bottom2) ? bottom1 : bottom2;
 
-        // check if the two sprites' boundaries intersect
-        return (s1x < s2x + s2.getWidth() &&
-            s2x < s1x + s1.getWidth() &&
-            s1y < s2y + s2.getHeight() &&
-            s2y < s1y + s1.getHeight());
-    }
+		// Determine the width and height of the collision rectangle
+		int width = leastright - leastleft;
+		int height = leastbottom - leasttop;
 
+		// Create arrays to hold the pixels
+		int[] pixels1 = new int[width * height];
+		int[] pixels2 = new int[width * height];
 
-    /**
-        Gets the Sprite that collides with the specified Sprite,
-        or null if no Sprite collides with the specified Sprite.
-    */
-    public Sprite getSpriteCollision(Sprite sprite) {
+		// Create the pixelgrabber and fill the arrays
+		PixelGrabber pg1 = new PixelGrabber(s1.getImage(), leastleft - left1, leasttop - top1, width, height, pixels1, 0, width);
+		PixelGrabber pg2 = new PixelGrabber(s2.getImage(), leastleft - left2, leasttop - top2, width, height, pixels2, 0, width);
 
-        // run through the list of Sprites
-        Iterator i = map.getSprites();
-        while (i.hasNext()) {
-            Sprite otherSprite = (Sprite)i.next();
-            if (isCollision(sprite, otherSprite)) {
-                // collision found, return the Sprite
-                return otherSprite;
-            }
-        }
+		// Grab the pixels
+		try {
+			pg1.grabPixels();
+			pg2.grabPixels();
+		} catch (InterruptedException ex) {
+			// Logger.getLogger(Sprite.class.getName()).log(Level.SEVERE, null,
+			// ex);
+		}
 
-        // no collision found
-        return null;
-    }
+		// Check if pixels at the same spot from both arrays are not
+		// transparent.
+		for (int i = 0; i < pixels1.length; i++) {
+			int a = (pixels1[i] >>> 24) & 0xff;
+			int a2 = (pixels2[i] >>> 24) & 0xff;
 
+			/*
+			 * Awesome, we found two pixels in the same spot that aren't
+			 * completely transparent! Thus the sprites are colliding!
+			 */
+			if (a > 0 && a2 > 0)
+				return true;
 
-    /**
-        Updates Animation, position, and velocity of all Sprites
-        in the current map.
-    */
-    public void update(long elapsedTime) {
-        Creature player = (Creature)map.getPlayer();
+		}
 
+		return false;
+	}
 
-        // player is dead! start map over
-        if (player.getState() == Creature.STATE_DEAD) {
-            map = resourceManager.reloadMap();
-            return;
-        }
+	/**
+	 * Checks if two Sprites collide with one another. Returns false if the two
+	 * Sprites are the same. Returns false if one of the Sprites is a Creature
+	 * that is not alive.
+	 */
+	public boolean isCollision(Sprite s1, Sprite s2) {
+		// if the Sprites are the same, return false
+		if (s1 == s2) {
+			return false;
+		}
 
-        // get keyboard/mouse input
-        checkInput(elapsedTime);
+		// if one of the Sprites is a dead Creature, return false
+		if (s1 instanceof Creature && !((Creature) s1).isAlive()) {
+			return false;
+		}
+		if (s2 instanceof Creature && !((Creature) s2).isAlive()) {
+			return false;
+		}
 
-        if(!paused){
-        	// update player
-            updateCreature(player, elapsedTime);
-            player.update(elapsedTime);
+		// get the pixel location of the Sprites
+		int s1x = Math.round(s1.getX());
+		int s1y = Math.round(s1.getY());
+		int s2x = Math.round(s2.getX());
+		int s2y = Math.round(s2.getY());
 
-            // update other sprites
-            Iterator i = map.getSprites();
-            while (i.hasNext()) {
-                Sprite sprite = (Sprite)i.next();
-                if (sprite instanceof Creature) {
-                    Creature creature = (Creature)sprite;
-                    if (creature.getState() == Creature.STATE_DEAD) {
-                        i.remove();
-                    }
-                    else {
-                        updateCreature(creature, elapsedTime);
-                    }
-                }
-                // normal update
-                sprite.update(elapsedTime);
-            }
-        }
-        
-    }
+		// check if the two sprites' boundaries intersect
+//		return (s1x < s2x + s2.getWidth() && s2x < s1x + s1.getWidth() && s1y < s2y + s2.getHeight()
+//				&& s2y < s1y + s1.getHeight());
+		if (s1x < s2x + s2.getWidth() && s2x < s1x + s1.getWidth() && s1y < s2y + s2.getHeight()
+				&& s2y < s1y + s1.getHeight()){
+			return pixelPerfectCollision(s1,s2);
+		}
+		else{
+			return false;
+		}
+	}
 
+	/**
+	 * Gets the Sprite that collides with the specified Sprite, or null if no
+	 * Sprite collides with the specified Sprite.
+	 */
+	public Sprite getSpriteCollision(Sprite sprite) {
 
-    /**
-        Updates the creature, applying gravity for creatures that
-        aren't flying, and checks collisions.
-    */
-    private void updateCreature(Creature creature,
-        long elapsedTime)
-    {
+		// run through the list of Sprites
+		Iterator i = map.getSprites();
+		while (i.hasNext()) {
+			Sprite otherSprite = (Sprite) i.next();
+			if (isCollision(sprite, otherSprite)) {
+				// collision found, return the Sprite
+				return otherSprite;
+			}
+		}
 
-        // apply gravity
-        if (!creature.isFlying()) {
-            creature.setVelocityY(creature.getVelocityY() +
-                GRAVITY * elapsedTime);
-        }
+		// no collision found
+		return null;
+	}
 
-        // change x
-        float dx = creature.getVelocityX();
-        float oldX = creature.getX();
-        float newX = oldX + dx * elapsedTime;
-        Point tile =
-            getTileCollision(creature, newX, creature.getY());
-        if (tile == null) {
-            creature.setX(newX);
-        }
-        else {
-            // line up with the tile boundary
-            if (dx > 0) {
-                creature.setX(
-                    TileMapRenderer.tilesToPixels(tile.x) -
-                    creature.getWidth());
-            }
-            else if (dx < 0) {
-                creature.setX(
-                    TileMapRenderer.tilesToPixels(tile.x + 1));
-            }
-            creature.collideHorizontal();
-        }
-        if (creature instanceof Player) {
-            checkPlayerCollision((Player)creature, false);
-        }
+	/**
+	 * Updates Animation, position, and velocity of all Sprites in the current
+	 * map.
+	 */
+	public void update(long elapsedTime) {
+		Creature player = (Creature) map.getPlayer();
 
-        // change y
-        float dy = creature.getVelocityY();
-        float oldY = creature.getY();
-        float newY = oldY + dy * elapsedTime;
-        tile = getTileCollision(creature, creature.getX(), newY);
-        if (tile == null) {
-            creature.setY(newY);
-        }
-        else {
-            // line up with the tile boundary
-            if (dy > 0) {
-                creature.setY(
-                    TileMapRenderer.tilesToPixels(tile.y) -
-                    creature.getHeight());
-            }
-            else if (dy < 0) {
-                creature.setY(
-                    TileMapRenderer.tilesToPixels(tile.y + 1));
-            }
-            creature.collideVertical();
-        }
-        if (creature instanceof Player) {
-            boolean canKill = (oldY < creature.getY());
-            checkPlayerCollision((Player)creature, canKill);
-        }
+		// player is dead! start map over
+		if (player.getState() == Creature.STATE_DEAD) {
+			map = resourceManager.reloadMap();
+			return;
+		}
 
-    }
+		// get keyboard/mouse input
+		checkInput(elapsedTime);
 
+		if (!paused) {
+			// update player
+			updateCreature(player, elapsedTime);
+			player.update(elapsedTime);
 
-    /**
-        Checks for Player collision with other Sprites. If
-        canKill is true, collisions with Creatures will kill
-        them.
-    */
-    public void checkPlayerCollision(Player player,
-        boolean canKill)
-    {
-        if (!player.isAlive()) {
-            return;
-        }
+			// update other sprites
+			Iterator i = map.getSprites();
+			while (i.hasNext()) {
+				Sprite sprite = (Sprite) i.next();
+				if (sprite instanceof Creature) {
+					Creature creature = (Creature) sprite;
+					if (creature.getState() == Creature.STATE_DEAD) {
+						i.remove();
+					} else {
+						updateCreature(creature, elapsedTime);
+					}
+				}
+				// normal update
+				sprite.update(elapsedTime);
+			}
+		}
 
-        // check for player collision with other sprites
-        Sprite collisionSprite = getSpriteCollision(player);
-        if (collisionSprite instanceof BackgroundSprites) {
-            acquirePowerUp((BackgroundSprites)collisionSprite);
-        }
-        else if (collisionSprite instanceof Creature) {
-            Creature badguy = (Creature)collisionSprite;
-            if (canKill) {
-                // kill the badguy and make player bounce
-                soundManager.play(boopSound);
-                badguy.setState(Creature.STATE_DYING);
-                player.setY(badguy.getY() - player.getHeight());
-                player.jump(true);
-            }
-            else {
-                // player dies!
-                player.setState(Creature.STATE_DYING);
-            }
-        }
-    }
+	}
 
+	/**
+	 * Updates the creature, applying gravity for creatures that aren't flying,
+	 * and checks collisions.
+	 */
+	private void updateCreature(Creature creature, long elapsedTime) {
 
-    /**
-        Gives the player the speicifed power up and removes it
-        from the map.
-    */
-    public void acquirePowerUp(BackgroundSprites powerUp) {
-        // remove it from the map
-        map.removeSprite(powerUp);
+		// apply gravity
+		if (!creature.isFlying()) {
+			creature.setVelocityY(creature.getVelocityY() + GRAVITY * elapsedTime);
+		}
 
-        if (powerUp instanceof BackgroundSprites.Goal) {
-            // advance to next map
-            soundManager.play(prizeSound,
-                new EchoFilter(2000, .7f), false);
-            map = resourceManager.loadNextMap();
-        }
-    }
+		// change x
+		float dx = creature.getVelocityX();
+		float oldX = creature.getX();
+		float newX = oldX + dx * elapsedTime;
+		Point tile = getTileCollision(creature, newX, creature.getY());
+		if (tile == null) {
+			creature.setX(newX);
+		} else {
+			// line up with the tile boundary
+			if (dx > 0) {
+				creature.setX(TileMapRenderer.tilesToPixels(tile.x) - creature.getWidth());
+			} else if (dx < 0) {
+				creature.setX(TileMapRenderer.tilesToPixels(tile.x + 1));
+			}
+			creature.collideHorizontal();
+		}
+		if (creature instanceof Player) {
+			checkPlayerCollision((Player) creature, false);
+		}
+
+		// change y
+		float dy = creature.getVelocityY();
+		float oldY = creature.getY();
+		float newY = oldY + dy * elapsedTime;
+		tile = getTileCollision(creature, creature.getX(), newY);
+		if (tile == null) {
+			creature.setY(newY);
+		} else {
+			// line up with the tile boundary
+			if (dy > 0) {
+				creature.setY(TileMapRenderer.tilesToPixels(tile.y) - creature.getHeight());
+			} else if (dy < 0) {
+				creature.setY(TileMapRenderer.tilesToPixels(tile.y + 1));
+			}
+			creature.collideVertical();
+		}
+		if (creature instanceof Player) {
+			boolean canKill = (oldY < creature.getY());
+			checkPlayerCollision((Player) creature, canKill);
+		}
+
+	}
+
+	/**
+	 * Checks for Player collision with other Sprites. If canKill is true,
+	 * collisions with Creatures will kill them.
+	 */
+	public void checkPlayerCollision(Player player, boolean canKill) {
+		if (!player.isAlive()) {
+			return;
+		}
+
+		// check for player collision with other sprites
+		Sprite collisionSprite = getSpriteCollision(player);
+		if (collisionSprite instanceof BackgroundSprites) {
+			acquirePowerUp((BackgroundSprites) collisionSprite);
+		} else if (collisionSprite instanceof Creature) {
+			Creature badguy = (Creature) collisionSprite;
+			if (canKill) {
+				// kill the badguy and make player bounce
+				soundManager.play(boopSound);
+				badguy.setState(Creature.STATE_DYING);
+				player.setY(badguy.getY() - player.getHeight());
+				player.jump(true);
+			} else {
+				// player dies!
+				player.setState(Creature.STATE_DYING);
+			}
+		}
+	}
+
+	/**
+	 * Gives the player the speicifed power up and removes it from the map.
+	 */
+	public void acquirePowerUp(BackgroundSprites powerUp) {
+		// remove it from the map
+		map.removeSprite(powerUp);
+
+		if (powerUp instanceof BackgroundSprites.Goal) {
+			// advance to next map
+			soundManager.play(prizeSound, new EchoFilter(2000, .7f), false);
+			map = resourceManager.loadNextMap();
+		}
+	}
 
 }
