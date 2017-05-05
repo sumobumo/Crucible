@@ -271,7 +271,7 @@ public class ResourceManager {
         Animation[] grubAnim = new Animation[4];
         for (int i=0; i<4; i++) {
             playerAnim[i] = createPlayerAnim(
-                images[i][0], images[i][1], images[i][2]);
+					images[i][0], images[i][1], images[i][2]);
             flyAnim[i] = createFlyAnim(
                 images[i][3], images[i][4], images[i][5]);
             grubAnim[i] = createGrubAnim(

@@ -377,7 +377,7 @@ public class GameManager extends GameCore {
 		Creature player = (Creature) map.getPlayer();
 
 		// player is dead! start map over
-		if (player.getState() == Creature.STATE_DEAD) {
+		if (player.getHealth() == Creature.STATE_DEAD) {
 			map = resourceManager.reloadMap();
 			return;
 		}
@@ -396,7 +396,7 @@ public class GameManager extends GameCore {
 				Sprite sprite = (Sprite) i.next();
 				if (sprite instanceof Creature) {
 					Creature creature = (Creature) sprite;
-					if (creature.getState() == Creature.STATE_DEAD) {
+					if (creature.getHealth() == Creature.STATE_DEAD) {
 						i.remove();
 					} else {
 						updateCreature(creature, elapsedTime);
@@ -481,12 +481,12 @@ public class GameManager extends GameCore {
 			if (canKill) {
 				// kill the badguy and make player bounce
 				soundManager.play(boopSound);
-				badguy.setState(Creature.STATE_DYING);
+				badguy.setHealth(Creature.STATE_DYING);
 				player.setY(badguy.getY() - player.getHeight());
 				player.jump(true);
 			} else {
 				// player dies!
-				player.setState(Creature.STATE_DYING);
+				player.setHealth(Creature.STATE_DYING);
 			}
 		}
 	}
