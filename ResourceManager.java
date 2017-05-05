@@ -136,6 +136,9 @@ public class ResourceManager {
         // read every line in the text file into the list
         BufferedReader reader = new BufferedReader(
             new FileReader(filename));
+        String backgroundFileName="background_front1.png";
+        String backgroundFileName2 = "background_front2.png";
+        String backgroundFileName3 = "background_front3.png";
         while (true) {
             String line = reader.readLine();
             // no more lines to read
@@ -146,6 +149,11 @@ public class ResourceManager {
 
             // add every line except for comments
             if (!line.startsWith("#")) {
+            if (line.startsWith("+")) {
+            	backgroundFileName=line.substring(1);
+            	backgroundFileName2=line.substring(1);
+            	backgroundFileName3=line.substring(1);
+            }
                 lines.add(line);
                 width = Math.max(width, line.length());
             }

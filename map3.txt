@@ -1,0 +1,16 @@
+#
+# Map file for tile-based game
+# (Lines that start with '#' are comments)
+# The tiles are:
+#   (Space) Empty tile
+#	X		Floor
+#   @       Goal
+#map width in tiles = 100
++background_front3.png
+                                        
+                                                                 
+
+                                          @	
+                      @   
+           P             1 1 1  1 1 1     1                      2                                @
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
