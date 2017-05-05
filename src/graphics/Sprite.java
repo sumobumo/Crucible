@@ -4,124 +4,116 @@ import java.awt.Image;
 
 public class Sprite {
 
-    protected Animation anim;
-    // position (pixels)
-    private float x;
-    private float y;
-    // velocity (pixels per millisecond)
-    private float dx;
-    private float dy;
-    protected float maxSpeed = .5f;
+	protected Animation anim;
+	// position (pixels)
+	protected float x;
+	protected float y;
+	// velocity (pixels per millisecond)
+	protected float dx;
+	protected float dy;
+	protected float maxSpeed = .3f;
 
-    /**
-        Creates a new Sprite object with the specified Animation.
-    */
-    public Sprite(Animation anim) {
-        this.anim = anim;
-    }
+	/**
+	 * Creates a new Sprite object with the specified Animation.
+	 */
+	public Sprite(Animation anim) {
+		this.anim = anim;
+	}
 
-    /**
-        Updates this Sprite's Animation and its position based
-        on the velocity.
-    */
-    public void update(long elapsedTime) {
-        x += dx * elapsedTime;
-        y += dy * elapsedTime;
-        anim.update(elapsedTime);
-    }
-    
-    public float getMaxSpeed() {
-        return maxSpeed;
-    }
+	/**
+	 * Updates this Sprite's Animation and its position based on the velocity.
+	 */
+	public void update(long elapsedTime) {
+		x += dx * elapsedTime;
+		y += dy * elapsedTime;
+		anim.update(elapsedTime);
+	}
 
-    /**
-        Gets this Sprite's current x position.
-    */
-    public float getX() {
-        return x;
-    }
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
 
-    /**
-        Gets this Sprite's current y position.
-    */
-    public float getY() {
-        return y;
-    }
+	/**
+	 * Gets this Sprite's current x position.
+	 */
+	public float getX() {
+		return x;
+	}
 
-    /**
-        Sets this Sprite's current x position.
-    */
-    public void setX(float x) {
-        this.x = x;
-    }
+	/**
+	 * Gets this Sprite's current y position.
+	 */
+	public float getY() {
+		return y;
+	}
 
-    /**
-        Sets this Sprite's current y position.
-    */
-    public void setY(float y) {
-        this.y = y;
-    }
+	/**
+	 * Sets this Sprite's current x position.
+	 */
+	public void setX(float x) {
+		this.x = x;
+	}
 
-    /**
-        Gets this Sprite's width, based on the size of the
-        current image.
-    */
-    public int getWidth() {
-        return anim.getImage().getWidth(null);
-    }
+	/**
+	 * Sets this Sprite's current y position.
+	 */
+	public void setY(float y) {
+		this.y = y;
+	}
 
-    /**
-        Gets this Sprite's height, based on the size of the
-        current image.
-    */
-    public int getHeight() {
-        return anim.getImage().getHeight(null);
-    }
+	/**
+	 * Gets this Sprite's width, based on the size of the current image.
+	 */
+	public int getWidth() {
+		return anim.getImage().getWidth(null);
+	}
 
-    /**
-        Gets the horizontal velocity of this Sprite in pixels
-        per millisecond.
-    */
-    public float getVelocityX() {
-        return dx;
-    }
+	/**
+	 * Gets this Sprite's height, based on the size of the current image.
+	 */
+	public int getHeight() {
+		return anim.getImage().getHeight(null);
+	}
 
-    /**
-        Gets the vertical velocity of this Sprite in pixels
-        per millisecond.
-    */
-    public float getVelocityY() {
-        return dy;
-    }
+	/**
+	 * Gets the horizontal velocity of this Sprite in pixels per millisecond.
+	 */
+	public float getVelocityX() {
+		return dx;
+	}
 
-    /**
-        Sets the horizontal velocity of this Sprite in pixels
-        per millisecond.
-    */
-    public void setVelocityX(float dx) {
-        this.dx = dx;
-    }
+	/**
+	 * Gets the vertical velocity of this Sprite in pixels per millisecond.
+	 */
+	public float getVelocityY() {
+		return dy;
+	}
 
-    /**
-        Sets the vertical velocity of this Sprite in pixels
-        per millisecond.
-    */
-    public void setVelocityY(float dy) {
-        this.dy = dy;
-    }
+	/**
+	 * Sets the horizontal velocity of this Sprite in pixels per millisecond.
+	 */
+	public void setVelocityX(float dx) {
+		this.dx = dx;
+	}
 
-    /**
-        Gets this Sprite's current image.
-    */
-    public Image getImage() {
-        return anim.getImage();
-    }
+	/**
+	 * Sets the vertical velocity of this Sprite in pixels per millisecond.
+	 */
+	public void setVelocityY(float dy) {
+		this.dy = dy;
+	}
 
-    /**
-        Clones this Sprite. Does not clone position or velocity
-        info.
-    */
-    public Object clone() {
-        return new Sprite(anim);
-    }
+	/**
+	 * Gets this Sprite's current image.
+	 */
+	public Image getImage() {
+		return anim.getImage();
+	}
+
+	/**
+	 * Clones this Sprite. Does not clone position or velocity info.
+	 */
+	public Object clone() {
+		return new Sprite(anim);
+	}
 }
