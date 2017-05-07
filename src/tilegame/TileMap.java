@@ -18,6 +18,10 @@ public class TileMap {
     private Image[][] tiles;
     private LinkedList sprites;
     private Sprite player;
+    
+    private Image background;
+    private Image background_mid;
+    private Image background_front;
 
     /**
         Creates a new TileMap with the specified width and
@@ -86,6 +90,22 @@ public class TileMap {
     }
 
 
+    public Image[] getBackgrounds(){
+    	return new Image[]{background, background_mid, background_front};
+    }
+    
+    /**
+     * 
+     * @param img background (sky)
+     * @param img1 mid background ( mountains )
+     * @param img2 front background ( castles )
+     */
+    public void setBackgrounds(Image img, Image img1, Image img2){
+    	this.background=img;
+    	this.background_mid = img1;
+    	this.background_front = img2;
+    }
+    
     /**
         Adds a Sprite object to this map.
     */

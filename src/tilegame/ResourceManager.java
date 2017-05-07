@@ -25,8 +25,11 @@ public class ResourceManager {
     private Sprite playerSprite;
     private Sprite portalSprite;
     
-    private Sprite grubSprite;
-    private Sprite flySprite;
+    private Sprite greenKnightSprite;
+    private Sprite greyKnightSprite;
+    private Sprite staffKnightSprite;
+    private Sprite femaleKnightSprite;
+    private Sprite bossKnightSprite;
     
 
 
@@ -49,6 +52,8 @@ public class ResourceManager {
     */
     public Image loadImage(String name) {
         String filename = "res/" + name;
+        //ClassLoader cl = this.getClass().getClassLoader();
+        //return new ImageIcon(cl.getClass().getResource(filename)).getImage();
         return new ImageIcon(filename).getImage();
     }
 
@@ -58,8 +63,28 @@ public class ResourceManager {
     }
 
 
-    public Image getFlippedImage(Image image) {
-        return getScaledImage(image, 1, -1);
+    public Image getDeadImage(Image image, int x) {
+    	
+        // set up the transform
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(Math.toRadians(x * 90), image.getWidth(null)/2, image.getHeight(null)/2);
+        //transform.translate(
+        //    image.getWidth(null) / 2,
+        //    image.getHeight(null) / 2);
+
+        // create a transparent (not translucent) image
+        Image newImage = gc.createCompatibleImage(
+            image.getWidth(null),
+            image.getHeight(null),
+            Transparency.BITMASK);
+
+        // draw the transformed image
+        Graphics2D g = (Graphics2D)newImage.getGraphics();
+        g.drawImage(image, transform, null);
+        g.dispose();
+
+        return newImage;
+    
     }
 
 
@@ -93,7 +118,7 @@ public class ResourceManager {
             currentMap++;
             try {
                 map = loadMap(
-                    "maps/map" + currentMap + ".txt");
+                    "maps/map" + currentMap + ".txt");                
             }
             catch (IOException ex) {
                 if (currentMap == 1) {
@@ -124,6 +149,9 @@ public class ResourceManager {
     private TileMap loadMap(String filename)
         throws IOException
     {
+    	String background="background/";
+        String background_mid="background/";
+    	String background_front="background/";
         ArrayList<String> lines = new ArrayList<String>();
         int width = 0;
         int height = 0;
@@ -141,8 +169,22 @@ public class ResourceManager {
 
             // add every line except for comments
             if (!line.startsWith("#")) {
-                lines.add(line);
-                width = Math.max(width, line.length());
+            	//front background image
+            	if(line.startsWith("+")){
+            		background_front += line.substring(1);
+            	}
+            	//mid background image
+            	else if(line.startsWith("-")){
+            		background_mid += line.substring(1);
+            	}
+            	//back background image
+            	else if(line.startsWith("/")){
+            		background += line.substring(1);
+            	}
+            	else{
+            		lines.add(line);
+            		width = Math.max(width, line.length());
+            	}
             }
         }
 
@@ -162,10 +204,19 @@ public class ResourceManager {
                     addSprite(newMap, portalSprite, x, y);
                 }
                 else if (ch == '1') {
-                    addSprite(newMap, grubSprite, x, y);
+                    addSprite(newMap, greenKnightSprite, x, y);
                 }
                 else if (ch == '2') {
-                    addSprite(newMap, flySprite, x, y);
+                    addSprite(newMap, greyKnightSprite, x, y);
+                }
+                else if (ch == '3') {
+                	addSprite(newMap, femaleKnightSprite, x, y);
+                }
+                else if (ch == '4') {
+                	addSprite(newMap, staffKnightSprite, x, y);
+                }
+                else if (ch == '5') {
+                	addSprite(newMap, bossKnightSprite, x, y);
                 }
             }
         }
@@ -175,7 +226,7 @@ public class ResourceManager {
         player.setX(TileMapRenderer.tilesToPixels(3));
         player.setY(0);
         newMap.setPlayer(player);
-
+        newMap.setBackgrounds(loadImage(background), loadImage(background_mid), loadImage(background_front));
         return newMap;
     }
 
@@ -260,31 +311,31 @@ public class ResourceManager {
             // right-facing images
             images[1][i] = getMirrorImage(images[0][i]);
             // left-facing "dead" images
-            images[2][i] = getFlippedImage(images[0][i]);
+            images[2][i] = getDeadImage(images[0][i], 1);
             // right-facing "dead" images
-            images[3][i] = getFlippedImage(images[1][i]);
+            images[3][i] = getDeadImage(images[1][i], -1);
         }
 
         // create creature animations
         Animation[] playerAnim = new Animation[4];
-        Animation[] flyAnim = new Animation[4];
-        Animation[] grubAnim = new Animation[4];
+        Animation[] greyKnightAnim = new Animation[4];
+        Animation[] greenKnightAnim = new Animation[4];
         for (int i=0; i<4; i++) {
             playerAnim[i] = createPlayerAnim(
-					images[i][0], images[i][1], images[i][2]);
-            flyAnim[i] = createFlyAnim(
+                images[i][0], images[i][1], images[i][2]);
+            greyKnightAnim[i] = createGreyKnightAnim(
                 images[i][3], images[i][4], images[i][5]);
-            grubAnim[i] = createGrubAnim(
+            greenKnightAnim[i] = createGreenKinghtAnim(
                 images[i][6], images[i][7]);
         }
 
         // create creature sprites
         playerSprite = new Player(playerAnim[0], playerAnim[1],
             playerAnim[2], playerAnim[3]);
-        flySprite = new Fly(flyAnim[0], flyAnim[1],
-            flyAnim[2], flyAnim[3]);
-        grubSprite = new Grub(grubAnim[0], grubAnim[1],
-            grubAnim[2], grubAnim[3]);
+        greyKnightSprite = new GreyKnight(greyKnightAnim[0], greyKnightAnim[1],
+            greyKnightAnim[2], greyKnightAnim[3]);
+        greenKnightSprite = new GreenKnight(greenKnightAnim[0], greenKnightAnim[1],
+            greenKnightAnim[2], greenKnightAnim[3]);
     }
 
 
@@ -302,7 +353,7 @@ public class ResourceManager {
     }
 
 
-    private Animation createFlyAnim(Image img1, Image img2,
+    private Animation createGreyKnightAnim(Image img1, Image img2,
         Image img3)
     {
         Animation anim = new Animation();
@@ -314,7 +365,7 @@ public class ResourceManager {
     }
 
 
-    private Animation createGrubAnim(Image img1, Image img2) {
+    private Animation createGreenKinghtAnim(Image img1, Image img2) {
         Animation anim = new Animation();
         anim.addFrame(img1, 250);
         anim.addFrame(img2, 250);

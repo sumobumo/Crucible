@@ -6,10 +6,17 @@
 #	X		Floor
 #   @       Goal
 #map width in tiles = 100
+#	+		front background
+#	-		mid background
+#	/		back background
++background_front3.png
+-background_mid3.png
+/background3.png
+ 
                                         
                                                                  
 
                                           @	
                       @   
-           P             1 1 1  1 1 1     1                      2                                @
+           P    @         1 1 1  1 1 1     1                      2                                @
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
