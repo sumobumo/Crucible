@@ -7,10 +7,9 @@ import graphics.Animation;
 */
 public class Boss extends Creature {
 
-    public Boss(Animation left, Animation right,
-        Animation deadLeft, Animation deadRight)
+    public Boss(Animation left, Animation right, Animation deadLeft, Animation deadRight, Animation attackLeft, Animation attackRight)
     {
-        super(left, right, deadLeft, deadRight);
+    	super(left, right, deadRight, deadRight, attackLeft, attackRight);
     }
 
 

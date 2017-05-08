@@ -85,7 +85,7 @@ public class GameAction {
 
     /**
         Signals that the key was pressed a specified number of
-        times, or that the mouse move a spcified distance.
+        times, or that the mouse move a specified distance.
     */
     public synchronized void press(int amount) {
         if (state != STATE_WAITING_FOR_RELEASE) {

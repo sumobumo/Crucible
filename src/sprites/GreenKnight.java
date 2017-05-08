@@ -7,20 +7,15 @@ import graphics.Animation;
 */
 public class GreenKnight extends Creature {
 
-    public GreenKnight(Animation left, Animation right,
-        Animation deadLeft, Animation deadRight)
+    public GreenKnight(Animation left, Animation right, Animation deadLeft, Animation deadRight, Animation attackLeft, Animation attackRight)
     {
-        super(left, right, deadLeft, deadRight);
+    	super(left, right, deadRight, deadRight, attackLeft, attackRight);
     }
 
 
     public float getMaxSpeed() {
         return 0.05f;
     }
-    
-    public int[] attackColors(){
-		return null;//TODO: grey
-	}
 
 }
 
