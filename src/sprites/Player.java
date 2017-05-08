@@ -9,8 +9,6 @@ public class Player extends Creature {
 
     //private static final float JUMP_SPEED = -.95f;
 
-    private boolean onGround;
-
     public Player(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
     {
@@ -26,7 +24,6 @@ public class Player extends Creature {
     public void collideVertical() {
         // check if collided with ground
         if (getVelocityY() > 0) {
-            onGround = true;
         }
         setVelocityY(0);
     }
@@ -35,7 +32,6 @@ public class Player extends Creature {
     public void setY(float y) {
         // check if falling
         if (Math.round(y) > Math.round(getY())) {
-            onGround = false;
         }
         super.setY(y);
     }

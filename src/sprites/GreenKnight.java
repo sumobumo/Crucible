@@ -17,6 +17,10 @@ public class GreenKnight extends Creature {
     public float getMaxSpeed() {
         return 0.05f;
     }
+    
+    public int[] attackColors(){
+		return null;//TODO: grey
+	}
 
 }
 
