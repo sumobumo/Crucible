@@ -11,10 +11,10 @@ public class Player extends Creature {
 
     private boolean onGround;
     
-    Animation rollLeft;
-    Animation rollRight;
-    Animation walkLeft;
-    Animation walkRight;
+    static Animation rollLeft;
+    static Animation rollRight;
+    static Animation walkLeft;
+    static Animation walkRight;
 
     public Player(Animation left, Animation right, Animation deadLeft, Animation deadRight, Animation attackLeft, Animation attackRight)
     {
@@ -54,31 +54,31 @@ public class Player extends Creature {
     	this.walkLeft = walkLeft;
     }
     
-    public Animation getWalkLeft(){
-    	return this.walkLeft;
+    public static Animation getWalkLeft(){
+    	return walkLeft;
     }
     
     public void setWalkRight(Animation walkRight){
     	this.walkRight = walkRight;
     }
     
-    public Animation getWalkRight(){
-    	return this.walkRight;
+    public static Animation getWalkRight(){
+    	return walkRight;
     }
     
     public void setRollLeft(Animation rollLeft){
     	this.rollLeft = rollLeft;
     }
     
-    public Animation getRollLeft(){
-    	return this.rollLeft;
+    public static Animation getRollLeft(){
+    	return rollLeft;
     }
 
     public void setRollRight(Animation rollRight){
     	this.rollRight = rollRight;
     }
-    public Animation getRollRight(){
-    	return this.rollRight;
+    public static Animation getRollRight(){
+    	return rollRight;
     }
 
 

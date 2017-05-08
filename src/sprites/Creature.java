@@ -24,28 +24,34 @@ public abstract class Creature extends Sprite {
 	public static final int STATE_DYING = 0;
 	public static final int STATE_DEAD = -1;
 	private static final int ROLL_TIME = 1000;
+	private static final int ATTACK_TIME = 2000;
 	private static final int INVULN_UPPER_THRESHOLD = 800;
-	private static final int INVULN_LOWER_THRESHOLD = 300;
+	private static final int INVULN_LOWER_THRESHOLD = 400;
+	private static final int ATTACK_UPPER_THRESHOLD = 1500;
+	private static final int ATTACK_LOWER_THRESHOLD = 500;
 	private static final float ROLL_SPEED = .6f;
 	private static final float ROLL_SLOW = .003f;
-	private static final float SLOW = .002f;
+	private static final float SLOW = .003f;
 	private static final float TIME_MODIFIER = .3f;
 	private static final float ACCELERATION = SLOW+.001f;
-	private static final float STOP_MODIFIER = 1.5f;
+	private static final float STOP_MODIFIER = 1.0f;
+	
 	
 
     private Animation left;
     private Animation right;
     private Animation deadLeft;
     private Animation deadRight;
-    private Animation attackLeft;
-    private Animation attackRight;
     
 	private int health;
 	private long stateTime;
-	private int stun;
-	private int roll;
-	private int beginRoll=0;
+	private int stunTime;
+	private int rollTime;
+	private int attackTime;
+	private int beginMove = 0;
+	private int beginRoll = 0;
+	private int beginAttack = 0;
+	private int attackValue = 50;
 	
 //    private int state;
 //    private long stateTime;
@@ -59,32 +65,29 @@ public abstract class Creature extends Sprite {
         Creates a new Creature with the specified Animations.
     */
     public Creature(Animation left, Animation right,
-        Animation deadLeft, Animation deadRight, Animation attackLeft, Animation attackRight)
+        Animation deadLeft, Animation deadRight)
     {
         super(right);
         this.left = left;
         this.right = right;
         this.deadLeft = deadLeft;
         this.deadRight = deadRight;
-        this.attackLeft = attackLeft;
-        this.attackRight = attackRight;
-        health = STATE_NORMAL;
-        stun = 0;
-		roll = 0;
+        health = 100;//STATE_NORMAL
+        stunTime = 0;
+		rollTime = 0;
+		attackTime = 0;
     }
 
 
     public Object clone() {
         // use reflection to create the correct subclass
-        Constructor constructor = getClass().getConstructors()[0];
+        Constructor<?> constructor = getClass().getConstructors()[0];
         try {
             return constructor.newInstance(new Object[] {
                 (Animation)left.clone(),
                 (Animation)right.clone(),
                 (Animation)deadLeft.clone(),
-                (Animation)deadRight.clone(),
-                (Animation)attackLeft.clone(),
-                (Animation)attackRight.clone()
+                (Animation)deadRight.clone()
             });
         }
         catch (Exception ex) {
@@ -153,25 +156,39 @@ public abstract class Creature extends Sprite {
 //    public boolean isFlying() {
 //        return false;
 //    }
-
+    public boolean isAttacking(){
+    	return (attackTime > 0);
+    }
     
     public boolean isStunned() {
-		return (stun > 0);
+		return (stunTime > 0);
 	}
 	
 	public boolean isInvulnerable(){
-		return (roll > INVULN_LOWER_THRESHOLD && roll < INVULN_UPPER_THRESHOLD);
+		return (rollTime > INVULN_LOWER_THRESHOLD && rollTime < INVULN_UPPER_THRESHOLD);
 	}
 	
 	public boolean isRolling(){
-		return (roll > 0);
+		return (rollTime > 0);
+	}
+	
+	public boolean isBusy(){
+		return isRolling() || isStunned() || isAttacking();
 	}
 	
 	public void beginRoll(int direction){
-		if (!isRolling()){
+		if (!isBusy()){
 			capSpeed(.1f);
-			roll = ROLL_TIME;
+			rollTime = ROLL_TIME;
 			beginRoll=direction;
+		}
+	}
+	
+	private void attack(int direction){
+		if (!isBusy()){
+			capSpeed(.1f);
+			attackTime = ATTACK_TIME;
+			beginAttack=direction;
 		}
 	}
 	
@@ -188,6 +205,8 @@ public abstract class Creature extends Sprite {
 		
 		setVelocityX(direction*ROLL_SPEED);
 	}
+	
+	
 	
 
     /**
@@ -212,6 +231,11 @@ public abstract class Creature extends Sprite {
 	 * Updates the animation for this creature.
 	 */
 	public void update(long elapsedTime) {
+//		if (this instanceof Player)
+//			System.out.println("update "+ elapsedTime);
+		
+		
+		
 		// select the correct Animation
 		Animation newAnim = anim;
 		if (getVelocityX() < 0) {
@@ -219,14 +243,6 @@ public abstract class Creature extends Sprite {
 		} else if (getVelocityX() > 0) {
 			newAnim = right;
 		}
-		
-		//TODO check creature attack here
-//		if(true){
-//			newAnim = attackLeft;
-//		}else{
-//			newAnim = attackRight;
-//		}
-		
 		if (health == STATE_DYING && newAnim == left) {
 			newAnim = deadLeft;
 		} else if (health == STATE_DYING && newAnim == right) {
@@ -248,16 +264,22 @@ public abstract class Creature extends Sprite {
 		}
 		// slow character
 		slow(elapsedTime);
-		// count down stun and invuln
-		if (stun>0){
-			stun-=elapsedTime;
+		
+		// move character
+		if (beginMove != 0){
+			move(beginMove, elapsedTime);
+			beginMove = 0;
 		}
-		if (roll>0){
-			if (roll>INVULN_UPPER_THRESHOLD){
+		
+		// count down stun and invuln
+		if (stunTime>0){
+			stunTime-=elapsedTime;
+		}
+		else if (rollTime>0){
+			if (rollTime>INVULN_UPPER_THRESHOLD){
 				//TODO: animate pre-roll
-				
 			}
-			else if (roll>INVULN_LOWER_THRESHOLD){
+			else if (rollTime>INVULN_LOWER_THRESHOLD){
 				//TODO: animate roll
 				if (beginRoll!=0){
 					roll(beginRoll);
@@ -268,11 +290,29 @@ public abstract class Creature extends Sprite {
 				//TODO: animate post-roll
 			}
 			
-			roll-=elapsedTime;
+			rollTime-=elapsedTime;
+		}
+		else if (attackTime>0){
+			if (attackTime>ATTACK_UPPER_THRESHOLD){
+				//TODO: animate pre-attack
+			}
+			else if (attackTime>ATTACK_LOWER_THRESHOLD){
+				//TODO: animate attack
+				if (beginAttack!=0){
+					attack(beginAttack);
+					beginAttack=0;
+				}
+			}
+			else{
+				//TODO: animate post-Attack
+			}
+			
+			attackTime-=elapsedTime;
 		}
 	}
 
 	public void slow(long elapsedTime) {
+//		elapsedTime = 1;
 		float slow;
 		if (isRolling()){
 			slow = ROLL_SLOW;
@@ -280,102 +320,55 @@ public abstract class Creature extends Sprite {
 		else{
 			slow = SLOW;
 		}
-		if (getVelocityX() > 0) {
-			float x = getVelocityX() - slow*elapsedTime*TIME_MODIFIER;
-			if (x < 0)
-				x = 0;
-			setVelocityX(x);
-		}
-		if (getVelocityX() < 0) {
-			float x = getVelocityX() + slow*elapsedTime*TIME_MODIFIER;
-			if (x > 0)
-				x = 0;
-			setVelocityX(x);
-		}
-	}
-	
-	public void moveLeft(Animation left) {
-		
-		
-		if (!isAlive() || isStunned() || isRolling())
-			return;
-		if (getVelocityX() > 0) {
-			// update the Animation
-			//anim = left;
-			
-			float diff = getVelocityX() - ACCELERATION * STOP_MODIFIER;
-			if (diff > 0) {
-				setVelocityX(diff);
-			} else {
-				setVelocityX(diff / STOP_MODIFIER);
+		if (dx > 0) {
+			dx -= slow*elapsedTime*TIME_MODIFIER;
+			if (dx < 0){
+				dx = 0;
 			}
-
-		} else {
-			float x = getVelocityX() - ACCELERATION;
-			if (x < -maxSpeed)
-				x = -maxSpeed;
-			setVelocityX(x);
 		}
-	}
-
-	public void moveRight(Animation right) {
-		if (!isAlive() || isStunned() || isRolling())
-			return;
-		if (getVelocityX() < 0) {
-			//anim = right;
-			float diff = getVelocityX() + ACCELERATION * STOP_MODIFIER;
-			if (diff < 0) {
-				setVelocityX(diff);
-			} else {
-				setVelocityX(diff / STOP_MODIFIER);
+		else if (dx < 0) {
+			dx += slow*elapsedTime*TIME_MODIFIER;
+			if (dx > 0){
+				dx = 0;
 			}
-
-		} else {
-			float x = getVelocityX() + ACCELERATION;
-			if (x > maxSpeed)
-				x = maxSpeed;
-			setVelocityX(x);
 		}
 	}
 	
+	public void move(int direction, long elapsedTime){
+		if (!isAlive() || isBusy())
+			return;
+		if (dx * direction < 0) {//if current direction and attempted direction are different
+			dx += direction * ACCELERATION * STOP_MODIFIER * elapsedTime;
+			if (dx * direction > 0) {//if current direction and attempted direction are now the same
+				dx /= STOP_MODIFIER;//remove stop_modifier from excess speed
+			}
+		} else {
+			dx += direction * ACCELERATION * elapsedTime;
+			if (Math.abs(dx) > maxSpeed)
+				dx = direction * maxSpeed;
+		}
+	}
 	
-	
-	
-    /**
-        Updates the animation for this creature.
-    */
-//    public void update(long elapsedTime) {
-//        // select the correct Animation
-//        Animation newAnim = anim;
-//        if (getVelocityX() < 0) {
-//            newAnim = left;
-//        }
-//        else if (getVelocityX() > 0) {
-//            newAnim = right;
-//        }
-//        if (health == STATE_DYING && newAnim == left) {
-//            newAnim = deadLeft;
-//        }
-//        else if (health == STATE_DYING && newAnim == right) {
-//            newAnim = deadRight;
-//        }
-//
-//        // update the Animation
-//        if (anim != newAnim) {
-//            anim = newAnim;
-//            anim.start();
-//        }
-//        else {
-//            anim.update(elapsedTime);
-//        }
-//
-//        // update to "dead" state
-//        stateTime += elapsedTime;
-//        if (health == STATE_DYING && stateTime >= DIE_TIME) {
-//            setHealth(STATE_DEAD);
-//        }
-//    }
-    
-    
+	public void moveStart(int direction) {
+		beginMove = -1;
+	}
 
+
+	public int getAttackValue() {
+		return attackValue;
+	}
+
+
+	public void attacked(int attackValue) {
+		health-=attackValue;
+		stunTime = 500;//get stunned
+		attackTime = 0;//interrupt attacks
+		rollTime = 0;//and rolls
+	}
+	/*
+	 * To be Overwritten by individual classes
+	 */
+	public int[] attackColors(){
+		return null;
+	}
 }

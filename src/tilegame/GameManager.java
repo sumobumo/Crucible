@@ -210,10 +210,10 @@ public class GameManager extends GameCore {
 //            player.setVelocityX(velocityX);
 //        }
     	if (moveLeft.isPressed() && !moveRight.isPressed()) {
-			player.moveLeft(player.getWalkLeft());
+			player.moveStart(-1);
 		}
 		if (moveRight.isPressed() && !moveLeft.isPressed()) {
-			player.moveRight(player.getWalkRight());
+			player.moveStart(1);
 		}
 		if(attack.isPressed()){
 			if(moveRight.isPressed()){
