@@ -518,16 +518,17 @@ public class GameManager extends GameCore {
 		if (collisionSprite==null){
 			return;
 		}
-		System.out.println(creature+" > "+collisionSprite);
+		System.out.println(creature+"  >  "+collisionSprite);
 		if (collisionSprite instanceof BackgroundSprites) {//TODO: Remove?
 			acquirePowerUp((BackgroundSprites) collisionSprite);
 		} else if (collisionSprite instanceof Creature) {
 			Creature attacked = (Creature) collisionSprite;
 			if (!attacked.isInvulnerable() &&
 				creature.isAttacking()) {
-//				System.out.println(creature+" >>> "+collisionSprite);
-				soundManager.play(boopSound);
-				//attacked.attacked(creature.getAttackValue());
+				System.out.println(creature+" >>> "+collisionSprite);
+//				soundManager.play(boopSound);
+				//TODO: check for collision with color
+				attacked.attacked(creature.getAttackValue());
 				//creature.setY(attacked.getY() - creature.getHeight());
 			}
 //			else if () {

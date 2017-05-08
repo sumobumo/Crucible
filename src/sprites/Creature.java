@@ -301,6 +301,7 @@ public abstract class Creature extends Sprite {
 			}
 			else if (attackTime>ATTACK_LOWER_THRESHOLD){
 				//TODO: animate attack
+				int[] colors = attackColors();
 				if (beginAttack!=0){
 //					attack(beginAttack);
 					beginAttack=0;
