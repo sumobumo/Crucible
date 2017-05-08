@@ -473,7 +473,7 @@ public class GameManager extends GameCore {
 			creature.collideHorizontal();
 		}
 //		if (creature instanceof Player) {
-			checkCharacterCollision(creature, false);//TODO: Remove?
+//			checkCharacterCollision(creature, false);//TODO: Remove?
 //		}
 
 		// change y
@@ -497,8 +497,8 @@ public class GameManager extends GameCore {
 		// checkPlayerCollision((Player)creature, canKill);
 		// }
 
-		boolean canKill = (oldY < creature.getY());
-		checkCharacterCollision(creature, canKill);
+//		boolean canKill = (oldY < creature.getY());
+		checkCharacterCollision(creature);
 
 	}
 
@@ -506,7 +506,7 @@ public class GameManager extends GameCore {
 	 * Checks for Player collision with other Sprites. If canKill is true,
 	 * collisions with Creatures will kill them.
 	 */
-	public void checkCharacterCollision(Creature creature, boolean canKill) {
+	public void checkCharacterCollision(Creature creature) {
 		if (!creature.isAlive()) {
 			return;
 		}
@@ -524,7 +524,6 @@ public class GameManager extends GameCore {
 		} else if (collisionSprite instanceof Creature) {
 			Creature attacked = (Creature) collisionSprite;
 			if (!attacked.isInvulnerable() &&
-				canKill &&
 				creature.isAttacking()) {
 //				System.out.println(creature+" >>> "+collisionSprite);
 				soundManager.play(boopSound);

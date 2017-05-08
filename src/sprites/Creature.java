@@ -190,7 +190,7 @@ public abstract class Creature extends Sprite {
 		}
 	}
 	
-	private void attack(int direction){
+	public void attack(int direction){
 		if (!isBusy()){
 			capSpeed(.1f);
 			attackTime = ATTACK_TIME;
@@ -208,11 +208,8 @@ public abstract class Creature extends Sprite {
 	}
 
 	private void roll(int direction){
-		
 		setVelocityX(direction*ROLL_SPEED);
 	}
-	
-	
 	
 
     /**
@@ -305,7 +302,7 @@ public abstract class Creature extends Sprite {
 			else if (attackTime>ATTACK_LOWER_THRESHOLD){
 				//TODO: animate attack
 				if (beginAttack!=0){
-					attack(beginAttack);
+//					attack(beginAttack);
 					beginAttack=0;
 				}
 			}
