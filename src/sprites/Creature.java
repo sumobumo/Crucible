@@ -171,7 +171,7 @@ public abstract class Creature extends Sprite {
 	}
 	
 	public boolean isInvulnerable(){
-		return (rollTime > INVULN_LOWER_THRESHOLD && rollTime < INVULN_UPPER_THRESHOLD);
+		return (isStunned()  || (rollTime > INVULN_LOWER_THRESHOLD && rollTime < INVULN_UPPER_THRESHOLD));
 	}
 	
 	public boolean isRolling(){
