@@ -268,7 +268,7 @@ public class ResourceManager {
     	
         
         String name = "background/floor.png";
-        File file = new File("res/" + name);
+        //File file = new File("res/" + name);
         tile = loadImage(name);
         
     

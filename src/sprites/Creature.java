@@ -34,7 +34,7 @@ public abstract class Creature extends Sprite {
 	private static final float SLOW = .003f;
 	private static final float TIME_MODIFIER = .3f;
 	private static final float ACCELERATION = SLOW+.001f;
-	private static final float STOP_MODIFIER = 1.5f;
+	private static final float STOP_MODIFIER = 1.0f;
 	
 	
 
@@ -48,9 +48,10 @@ public abstract class Creature extends Sprite {
 	private int stunTime;
 	private int rollTime;
 	private int attackTime;
-	private int beginRoll=0;
-	private int beginAttack=0;
-	private int attackValue=50;
+	private int beginMove = 0;
+	private int beginRoll = 0;
+	private int beginAttack = 0;
+	private int attackValue = 50;
 	
 //    private int state;
 //    private long stateTime;
@@ -80,7 +81,7 @@ public abstract class Creature extends Sprite {
 
     public Object clone() {
         // use reflection to create the correct subclass
-        Constructor constructor = getClass().getConstructors()[0];
+        Constructor<?> constructor = getClass().getConstructors()[0];
         try {
             return constructor.newInstance(new Object[] {
                 (Animation)left.clone(),
@@ -230,6 +231,11 @@ public abstract class Creature extends Sprite {
 	 * Updates the animation for this creature.
 	 */
 	public void update(long elapsedTime) {
+//		if (this instanceof Player)
+//			System.out.println("update "+ elapsedTime);
+		
+		
+		
 		// select the correct Animation
 		Animation newAnim = anim;
 		if (getVelocityX() < 0) {
@@ -258,6 +264,13 @@ public abstract class Creature extends Sprite {
 		}
 		// slow character
 		slow(elapsedTime);
+		
+		// move character
+		if (beginMove != 0){
+			move(beginMove, elapsedTime);
+			beginMove = 0;
+		}
+		
 		// count down stun and invuln
 		if (stunTime>0){
 			stunTime-=elapsedTime;
@@ -299,6 +312,7 @@ public abstract class Creature extends Sprite {
 	}
 
 	public void slow(long elapsedTime) {
+//		elapsedTime = 1;
 		float slow;
 		if (isRolling()){
 			slow = ROLL_SLOW;
@@ -320,40 +334,27 @@ public abstract class Creature extends Sprite {
 		}
 	}
 	
-	public void moveLeft() {
+	public void move(int direction, long elapsedTime){
 		if (!isAlive() || isBusy())
 			return;
-		if (dx > 0) {
-			float diff = dx - ACCELERATION * STOP_MODIFIER;
-			if (diff > 0) {
-				dx = diff;
-			} else {
-				dx = diff / STOP_MODIFIER;
+		if (dx * direction < 0) {//if current direction and attempted direction are different
+			dx += direction * ACCELERATION * STOP_MODIFIER * elapsedTime;
+			if (dx * direction > 0) {//if current direction and attempted direction are now the same
+				dx /= STOP_MODIFIER;//remove stop_modifier from excess speed
 			}
-
 		} else {
-			dx -= ACCELERATION;
-			if (dx < -maxSpeed)
-				dx = -maxSpeed;
+			dx += direction * ACCELERATION * elapsedTime;
+			if (Math.abs(dx) > maxSpeed)
+				dx = direction * maxSpeed;
 		}
 	}
+	
+	public void moveLeft(long elapsedTime) {
+		beginMove = -1;
+	}
 
-	public void moveRight() {
-		if (!isAlive() || isBusy())
-			return;
-		if (dx < 0) {
-			float diff = dx + ACCELERATION * STOP_MODIFIER;
-			if (diff < 0) {
-				dx = diff;
-			} else {
-				dx = diff / STOP_MODIFIER;
-			}
-
-		} else {
-			dx += ACCELERATION;
-			if (dx > maxSpeed)
-				dx = maxSpeed;
-		}
+	public void moveRight(long elapsedTime) {
+		beginMove = 1;
 	}
 
 

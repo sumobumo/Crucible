@@ -8,7 +8,7 @@ import java.awt.image.PixelGrabber;
 import java.util.Iterator;
 
 import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
+//import javax.sound.midi.Sequencer;
 import javax.sound.sampled.AudioFormat;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -36,7 +36,7 @@ public class GameManager extends GameCore {
 	// uncompressed, 44100Hz, 16-bit, mono, signed, little-endian
 	private static final AudioFormat PLAYBACK_FORMAT = new AudioFormat(44100, 16, 1, true, false);
 
-	private static final int DRUM_TRACK = 1;
+//	private static final int DRUM_TRACK = 1;
 
 	public static final float GRAVITY = 0.002f;
 
@@ -53,7 +53,7 @@ public class GameManager extends GameCore {
 	private GameAction moveLeft;
 	private GameAction moveRight;
 	private GameAction roll;
-	private GameAction exit;
+//	private GameAction exit;
 
 	// for pausing game
 	private GameAction pause;
@@ -196,10 +196,10 @@ public class GameManager extends GameCore {
 		// player.setVelocityX(velocityX);
 		// }
 		if (moveLeft.isPressed() && !moveRight.isPressed()) {
-			player.moveLeft();
+			player.moveLeft(elapsedTime);
 		}
 		if (moveRight.isPressed() && !moveLeft.isPressed()) {
-			player.moveRight();
+			player.moveRight(elapsedTime);
 		}
 		if (roll.isPressed()) {
 			if (moveRight.isPressed()) {
@@ -384,7 +384,7 @@ public class GameManager extends GameCore {
 	public Sprite getSpriteCollision(Sprite sprite) {
 
 		// run through the list of Sprites
-		Iterator i = map.getSprites();
+		Iterator<?> i = map.getSprites();
 		while (i.hasNext()) {
 			Sprite otherSprite = (Sprite) i.next();
 			if (isCollision(sprite, otherSprite)) {
@@ -419,7 +419,7 @@ public class GameManager extends GameCore {
 			player.update(elapsedTime);
 
 			// update other sprites
-			Iterator i = map.getSprites();
+			Iterator<?> i = map.getSprites();
 			while (i.hasNext()) {
 				Sprite sprite = (Sprite) i.next();
 				if (sprite instanceof Creature) {
@@ -510,7 +510,7 @@ public class GameManager extends GameCore {
 		if (collisionSprite==null){
 			return;
 		}
-		System.out.println(creature+" > "+collisionSprite);
+//		System.out.println(creature+" > "+collisionSprite);
 		if (collisionSprite instanceof BackgroundSprites) {//TODO: Remove?
 			acquirePowerUp((BackgroundSprites) collisionSprite);
 		} else if (collisionSprite instanceof Creature) {
@@ -518,7 +518,7 @@ public class GameManager extends GameCore {
 			if (!attacked.isInvulnerable() &&
 				canKill &&
 				creature.isAttacking()) {
-				System.out.println(creature+" >>> "+collisionSprite);
+//				System.out.println(creature+" >>> "+collisionSprite);
 				soundManager.play(boopSound);
 				//attacked.attacked(creature.getAttackValue());
 				//creature.setY(attacked.getY() - creature.getHeight());
