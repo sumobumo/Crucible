@@ -42,6 +42,8 @@ public abstract class Creature extends Sprite {
     private Animation right;
     private Animation deadLeft;
     private Animation deadRight;
+    private Animation attackLeft;
+    private Animation attackRight;
     
 	private int health;
 	private long stateTime;
@@ -65,13 +67,15 @@ public abstract class Creature extends Sprite {
         Creates a new Creature with the specified Animations.
     */
     public Creature(Animation left, Animation right,
-        Animation deadLeft, Animation deadRight)
+        Animation deadLeft, Animation deadRight, Animation attackLeft, Animation attackRight)
     {
         super(right);
         this.left = left;
         this.right = right;
         this.deadLeft = deadLeft;
         this.deadRight = deadRight;
+        this.attackLeft = attackLeft;
+        this.attackRight = attackRight;
         health = 100;//STATE_NORMAL
         stunTime = 0;
 		rollTime = 0;
@@ -87,7 +91,9 @@ public abstract class Creature extends Sprite {
                 (Animation)left.clone(),
                 (Animation)right.clone(),
                 (Animation)deadLeft.clone(),
-                (Animation)deadRight.clone()
+                (Animation)deadRight.clone(),
+                (Animation)attackLeft.clone(),
+                (Animation)attackRight.clone()
             });
         }
         catch (Exception ex) {
@@ -350,7 +356,7 @@ public abstract class Creature extends Sprite {
 	}
 	
 	public void moveStart(int direction) {
-		beginMove = -1;
+		beginMove = direction;
 	}
 
 
