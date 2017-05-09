@@ -206,16 +206,22 @@ public class GameManager extends GameCore {
 			if (moveRight.isPressed()) {
 				player.attack(1);
 			}
-			if (moveLeft.isPressed()) {
+			else if (moveLeft.isPressed()) {
 				player.attack(-1);
+			}
+			else{
+				player.attack(2);
 			}
 		}
 		if (roll.isPressed()) {
 			if (moveRight.isPressed()) {
 				player.beginRoll(1);
 			}
-			if (moveLeft.isPressed()) {
+			else if (moveLeft.isPressed()) {
 				player.beginRoll(-1);
+			}
+			else{
+				player.beginRoll(2);
 			}
 		}
 
@@ -518,7 +524,7 @@ public class GameManager extends GameCore {
 		if (collisionSprite==null){
 			return;
 		}
-		System.out.println(creature+"  >  "+collisionSprite);
+//		System.out.println(creature+"  >  "+collisionSprite);
 		if (collisionSprite instanceof BackgroundSprites) {//TODO: Remove?
 			acquirePowerUp((BackgroundSprites) collisionSprite);
 		} else if (collisionSprite instanceof Creature) {

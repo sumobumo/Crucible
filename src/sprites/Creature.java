@@ -24,11 +24,12 @@ public abstract class Creature extends Sprite {
 	public static final int STATE_DYING = 0;
 	public static final int STATE_DEAD = -1;
 	private static final int ROLL_TIME = 1000;
-	private static final int ATTACK_TIME = 2000;
 	private static final int INVULN_UPPER_THRESHOLD = 800;
 	private static final int INVULN_LOWER_THRESHOLD = 400;
-	private static final int ATTACK_UPPER_THRESHOLD = 1500;
-	private static final int ATTACK_LOWER_THRESHOLD = 500;
+	private static final int ATTACK_TIME = 1500;
+	private static final int ATTACK_UPPER_THRESHOLD = 900;
+	private static final int ATTACK_LOWER_THRESHOLD = 600;
+	private static final int STUN_TIME = 1000;
 	private static final float ROLL_SPEED = .6f;
 	private static final float ROLL_SLOW = .003f;
 	private static final float SLOW = .003f;
@@ -54,6 +55,7 @@ public abstract class Creature extends Sprite {
 	private int beginRoll = 0;
 	private int beginAttack = 0;
 	private int attackValue = 50;
+	private int dir=0;
 	
 //    private int state;
 //    private long stateTime;
@@ -162,8 +164,12 @@ public abstract class Creature extends Sprite {
 //    public boolean isFlying() {
 //        return false;
 //    }
-    public boolean isAttacking(){
+    public boolean isBusyAttacking(){
     	return (attackTime > 0);
+    }
+    
+    public boolean isAttacking(){
+    	return (attackTime > ATTACK_LOWER_THRESHOLD && attackTime < ATTACK_UPPER_THRESHOLD);
     }
     
     public boolean isStunned() {
@@ -179,11 +185,18 @@ public abstract class Creature extends Sprite {
 	}
 	
 	public boolean isBusy(){
-		return isRolling() || isStunned() || isAttacking();
+		return isRolling() || isStunned() || isBusyAttacking();
 	}
 	
 	public void beginRoll(int direction){
+		if (direction ==2){
+			direction = dir;
+		}
+		dir = direction;
 		if (!isBusy()){
+			if (direction==2){
+				direction = dir;
+			}
 			capSpeed(.1f);
 			rollTime = ROLL_TIME;
 			beginRoll=direction;
@@ -341,6 +354,7 @@ public abstract class Creature extends Sprite {
 	public void move(int direction, long elapsedTime){
 		if (!isAlive() || isBusy())
 			return;
+		dir = direction;
 		if (dx * direction < 0) {//if current direction and attempted direction are different
 			dx += direction * ACCELERATION * STOP_MODIFIER * elapsedTime;
 			if (dx * direction > 0) {//if current direction and attempted direction are now the same
@@ -365,7 +379,7 @@ public abstract class Creature extends Sprite {
 
 	public void attacked(int attackValue) {
 		health-=attackValue;
-		stunTime = 500;//get stunned
+		stunTime = STUN_TIME;//get stunned
 		attackTime = 0;//interrupt attacks
 		rollTime = 0;//and rolls
 	}
